@@ -11,8 +11,8 @@ const MOCK_CLAN = {
   members: [
     { id: "u1", name: "Rafael", role: "leader", level: 32, avatar: "./images/digimons/rookies/renamon.jpg", online: true, contribWeek: 850 },
     { id: "u2", name: "Agus", role: "officer", level: 28, avatar: "./images/digimons/rookies/agumon.jpg", online: false, contribWeek: 420 },
-    { id: "u3", name: "Gabu", role: "member", level: 21, avatar: "./images/digimons/rookies/gabumon.jpg", online: true, contribWeek: 120 },
-    { id: "u4", name: "Mon", role: "member", level: 18, avatar: "./images/digimons/rookies/monmon.jpg", online: false, contribWeek: 60 },
+    { id: "u3", name: "Gabu", role: "member", level: 21, avatar: "./images/digimons/rookies/gabumon.jpg", online: true, contribWeek: 1200 },
+    { id: "u4", name: "Mon", role: "member", level: 18, avatar: "./images/digimons/rookies/monmon.jpg", online: false, contribWeek: 10000 },
   ],
   capacity: 30,
   perks: [
@@ -137,6 +137,7 @@ function renderHero(c) {
 }
 
 function renderOverview(c) {
+  // MOTD & botão editar (mantém seu código atual) ...
   $("clan-motd").textContent = c.motd;
   $("motd-edit-wrap").classList.add("hidden");
   $("clan-motd").classList.remove("hidden");
@@ -145,16 +146,31 @@ function renderOverview(c) {
   const canEditMotd = PLAYER.role === "leader";
   setVisible($("btn-motd-edit"), canEditMotd);
 
+  // --- BÔNUS / PERKS (mantém) ---
   const perks = $("clan-perks"); perks.innerHTML = "";
   c.perks.forEach(p => { const li = document.createElement("li"); li.textContent = p; perks.appendChild(li); });
 
-  const wP = pct(c.weekly);
+  // --- PROGRESSO SEMANAL (NOVA LÓGICA) ---
+  // soma de contribuições semanais informadas por membro
+  const totalContrib = (c.members || []).reduce((sum, m) => sum + (m.contribWeek || 0), 0);
+
+  // meta semanal total = meta definida pelo clã * número de membros
+  const membersCount = Math.max(1, (c.members || []).length); // evita 0
+  const weeklyTarget = Math.max(1, c.weekly?.target || 0);     // evita 0 / undefined
+  const metaTotal = weeklyTarget * membersCount;
+
+  // percentual seguro (0..100)
+  const wP = Math.min(100, Math.round((totalContrib / metaTotal) * 100));
   $("weekly-bar").style.width = wP + "%";
-  $("weekly-text").textContent = `${c.weekly.current}/${c.weekly.target} (${wP}%)`;
-  $("weekly-reset").textContent = `Reseta: ${c.weekly.resetAt}`;
+  $("weekly-text").textContent = `${totalContrib}/${metaTotal} (${wP}%)`;
+  $("weekly-reset").textContent = `Reseta: ${c.weekly?.resetAt || "-"}`;
 
   const feed = $("activity-feed"); feed.innerHTML = "";
-  c.activities.forEach(a => { const li = document.createElement("li"); li.textContent = `${a.text} — ${a.when}`; feed.appendChild(li); });
+  (c.activities || []).forEach(a => {
+    const li = document.createElement("li");
+    li.textContent = `${a.text} — ${a.when}`;
+    feed.appendChild(li);
+  });
 }
 
 function renderMembers(c) {
@@ -464,6 +480,15 @@ function donate(kind) {
   if (kind === "crystal-5") text = "+5 Cristais";
   MOCK_CLAN.donations.unshift({ who: PLAYER.name, what: text, when: "agora" });
   MOCK_CLAN.weekly.current += kind.includes("bits") ? parseInt(kind.split("-")[1], 10) : 250;
+
+  // NOVO: adiciona na contribuição semanal do jogador
+  const me = MOCK_CLAN.members.find(m => m.id === PLAYER.id);
+  if (me) me.contribWeek = (me.contribWeek || 0) + points;
+
+  // Se ainda quiser manter o contador antigo, pode deixar a linha abaixo,
+  // mas a barra da visão geral agora NÃO usa mais weekly.current para o cálculo:
+  // MOCK_CLAN.weekly.current += points;
+  
   renderOverview(MOCK_CLAN);
   renderDonations(MOCK_CLAN);
   alert("Obrigado pela doação!");
