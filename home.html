@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Digimon Revolution</title>
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- CSS externo -->
+    <link rel="stylesheet" href="./css/home.css">
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+
+    <!-- HEADER -->
+    <header class="flex justify-between items-center p-4 bg-gray-800 shadow-md">
+        <h1 class="text-xl font-bold">Meu Digimon</h1>
+        <div class="flex space-x-4">
+            <button onclick="window.location.href='profile.html'">
+                <i data-feather="user"></i>
+            </button>
+            <button onclick="window.location.href='settings.html'">
+                <i data-feather="settings"></i>
+            </button>
+            <button><i data-feather="log-out"></i></button>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="flex-1 flex flex-col items-center p-6">
+        <!-- Imagem do Digimon -->
+        <img id="digimon-img" src="./images/digimons/rookies/bearmon.jpg" alt="Digimon" class="w-40 h-40 mb-4">
+
+        <!-- Nome + Nível -->
+        <h2 id="digimon-nome" class="text-2xl font-bold">Nome</h2>
+        <p id="digimon-nivel" class="text-lg text-gray-400">Nível: --</p>
+        <p id="digimon-tier" class="text-md italic text-gray-400">Tier: --</p>
+
+
+        <!-- Barras de Status -->
+        <div class="w-full max-w-md mt-6 space-y-4">
+            <!-- HP -->
+            <div>
+                <p class="mb-1">HP</p>
+                <div class="w-full bg-gray-700 rounded-full h-6 relative">
+                    <div id="hp-bar" class="bg-red-500 h-6 rounded-full" style="width: 80%;"></div>
+                    <span id="hp-text"
+                        class="absolute inset-0 flex justify-center items-center text-xs font-bold text-white">
+                        80/100
+                    </span>
+                </div>
+            </div>
+
+            <!-- Energia -->
+            <div>
+                <p class="mb-1">Energia</p>
+                <div class="w-full bg-gray-700 rounded-full h-6 relative">
+                    <div id="energia-bar" class="bg-blue-500 h-6 rounded-full" style="width: 60%;"></div>
+                    <span id="energia-text"
+                        class="absolute inset-0 flex justify-center items-center text-xs font-bold text-white">
+                        60/100
+                    </span>
+                </div>
+            </div>
+
+            <!-- Experiência (DIGIMON) -->
+            <div>
+                <p class="mb-1">Experiência</p>
+                <div class="w-full bg-gray-700 rounded-full h-6 relative">
+                    <div id="xp-bar" class="bg-purple-500 h-6 rounded-full" style="width: 0%;"></div>
+                    <span id="xp-text"
+                        class="absolute inset-0 flex justify-center items-center text-xs font-bold text-white">
+                        0/0
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Atributos -->
+        <div class="grid grid-cols-2 gap-4 mt-6 text-center">
+            <div class="atributo-box">
+                <p class="atributo-label">ATK</p>
+                <p id="atk" class="atributo-valor">--</p>
+            </div>
+            <div class="atributo-box">
+                <p class="atributo-label">DEF</p>
+                <p id="def" class="atributo-valor">--</p>
+            </div>
+            <div class="atributo-box">
+                <p class="atributo-label">SPD</p>
+                <p id="spd" class="atributo-valor">--</p>
+            </div>
+            <div class="atributo-box">
+                <p class="atributo-label">INT</p>
+                <p id="int" class="atributo-valor">--</p>
+            </div>
+            <div class="atributo-box">
+                <p class="atributo-label">CRATE</p>
+                <p id="crate" class="atributo-valor">--</p>
+            </div>
+            <div class="atributo-box">
+                <p class="atributo-label">CDAMAGE</p>
+                <p id="cdamage" class="atributo-valor">--</p>
+            </div>
+            <div class="atributo-box">
+                <p class="atributo-label">ACC</p>
+                <p id="acc" class="atributo-valor">--</p>
+            </div>
+        </div>
+
+        <!-- Informações Gerais -->
+        <div class="mt-8 w-full max-w-md bg-gray-800 rounded-xl p-4 shadow-md">
+            <h3 class="text-lg font-bold mb-3 text-center">Informações</h3>
+            <div class="grid grid-cols-3 gap-4 text-center">
+                <div class="info-box">
+                    <p class="atributo-label">Personalidade</p>
+                    <p id="personalidade" class="atributo-valor">--</p>
+                </div>
+                <div class="info-box">
+                    <p class="atributo-label">Tipo</p>
+                    <p id="tipo" class="atributo-valor">--</p>
+                </div>
+                <div class="info-box">
+                    <p class="atributo-label">Elemento</p>
+                    <p id="elemento" class="atributo-valor">--</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MENU DE NAVEGAÇÃO -->
+    <footer class="bg-gray-800 p-4 flex justify-around">
+        <button class="menu-btn">
+            <i data-feather="map"></i>
+            <span>Jornada</span>
+        </button>
+        <button class="menu-btn">
+            <i data-feather="activity"></i>
+            <span>Treinar</span>
+        </button>
+        <button class="menu-btn">
+            <i data-feather="package"></i>
+            <span>Inventário</span>
+        </button>
+        <button class="menu-btn" onclick="window.location.href='clan.html'">
+            <i data-feather="users"></i>
+            <span>Clã</span>
+        </button>
+        <button class="menu-btn">
+            <i data-feather="shopping-cart"></i>
+            <span>Loja</span>
+        </button>
+    </footer>
+
+    <!-- JS externo -->
+    <script src="./script/home.js"></script>
+</body>
+
+</html>

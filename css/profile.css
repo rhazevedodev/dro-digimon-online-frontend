@@ -1,0 +1,14 @@
+.digimon-card {
+    border: 3px solid transparent;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+  
+  .digimon-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .digimon-card.ativo {
+    border-color: #facc15; /* Amarelo dourado */
+    box-shadow: 0 0 15px rgba(250, 204, 21, 0.7);
+  }

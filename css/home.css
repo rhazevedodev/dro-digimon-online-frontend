@@ -1,0 +1,46 @@
+/* Estilo adicional para home */
+
+.atributo-box {
+    background-color: #1f2937; /* gray-800 */
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  }
+  
+  .atributo-label {
+    font-size: 0.875rem;
+    color: #9ca3af; /* gray-400 */
+  }
+  
+  .atributo-valor {
+    font-size: 1.125rem;
+    font-weight: bold;
+  }
+  
+  .menu-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.875rem;
+  }
+  
+  .menu-btn span {
+    margin-top: 0.25rem;
+  }
+  
+  /* Responsividade extra para mobile */
+  @media (max-width: 640px) {
+    main {
+      padding: 1rem;
+    }
+  
+    #digimon-img {
+      width: 120px;
+      height: 120px;
+    }
+  
+    .atributo-box {
+      padding: 0.5rem;
+    }
+  }
+  

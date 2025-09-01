@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Amigos - Digimon Revolution</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./css/amigos.css" />
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+
+  <!-- HEADER -->
+  <header class="flex items-center justify-between p-4 bg-gray-800 shadow-md">
+    <button id="btn-back" class="flex items-center gap-2 hover:opacity-90">
+      <i data-feather="arrow-left"></i>
+      <span class="hidden sm:inline">Voltar</span>
+    </button>
+    <h1 class="text-xl font-bold">Amigos</h1>
+    <span class="opacity-0"><i data-feather="arrow-left"></i></span>
+  </header>
+
+  <!-- TOOLS -->
+  <section class="p-4 sm:p-6 max-w-5xl mx-auto w-full space-y-4">
+    <!-- Meu código -->
+    <div class="tool-row">
+      <div class="chip-label">
+        <i data-feather="key"></i>
+        Meu código:
+        <span id="my-code" class="chip">----</span>
+      </div>
+      <div class="tool-actions">
+        <button id="btn-copy" class="btn btn-ghost">
+          <i data-feather="copy"></i> Copiar
+        </button>
+      </div>
+    </div>
+
+    <!-- Adicionar amigo -->
+    <div class="add-box">
+      <div class="add-input-wrap">
+        <i data-feather="user-plus" class="icon-left"></i>
+        <input id="add-input" class="input has-icon" type="text" placeholder="Apelido ou Código do amigo" />
+      </div>
+      <button id="btn-add" class="btn btn-primary">
+        <i data-feather="plus"></i> Adicionar
+      </button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" data-tab="friends">
+        <i data-feather="users"></i> Amigos
+      </button>
+      <button class="tab" data-tab="requests">
+        <i data-feather="inbox"></i> Solicitações
+      </button>
+      <button class="tab" data-tab="discover">
+        <i data-feather="search"></i> Procurar
+      </button>
+    </div>
+  </section>
+
+  <!-- CONTENT -->
+  <main class="flex-1 p-4 sm:p-6 max-w-5xl mx-auto w-full">
+    <!-- BUSCA (somente em Procurar) -->
+    <div id="discover-controls" class="hidden mb-4">
+      <div class="relative">
+        <i data-feather="search" class="icon-left"></i>
+        <input id="search-input" class="input has-icon" type="text" placeholder="Buscar jogadores por apelido..." />
+      </div>
+    </div>
+
+    <!-- LISTA -->
+    <div id="list-container" class="space-y-3"></div>
+
+    <!-- ESTADO VAZIO -->
+    <div id="empty-state" class="hidden text-center text-gray-400 mt-10">
+      <i data-feather="coffee" class="w-10 h-10 mx-auto mb-2"></i>
+      <p>Nada por aqui ainda.</p>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="p-4 bg-gray-800 text-center text-sm text-gray-400">
+    Dica: compartilhe seu código para adicionar amigos rapidamente!
+  </footer>
+
+  <script src="./script/amigos.js"></script>
+  <script>feather.replace();</script>
+</body>
+</html>

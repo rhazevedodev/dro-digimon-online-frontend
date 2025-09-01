@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seleção de Digimon</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Ícones -->
+  <script src="https://unpkg.com/feather-icons"></script>
+  <link rel="stylesheet" href="./css/continuarJornada.css">
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-start py-10 relative">
+
+<!-- Header -->
+<div class="w-full max-w-6xl flex justify-between items-center mb-8 px-8 header-responsive">
+    <!-- Pontos Digitais -->
+    <div id="pontos-digitais" class="info-box">
+      <i data-feather="cpu" class="w-6 h-6 text-white"></i>
+      <span class="font-bold text-lg">Pontos Digitais:</span>
+      <span id="valor-pontos" class="font-extrabold text-yellow-300 text-xl">0</span>
+    </div>
+  
+    <!-- Botão Logout -->
+    <button id="logout-btn" class="logout-btn">
+      <i data-feather="log-out" class="w-5 h-5"></i>
+      Logout
+    </button>
+  </div>
+
+  <!-- Grid de Slots -->
+  <div id="slots-container" class="grid grid-cols-4 gap-8 p-8 max-w-6xl">
+    <!-- Slots serão renderizados dinamicamente pelo JS -->
+  </div>
+
+  <!-- Painel lateral de informações -->
+<div id="info-panel" class="hidden fixed top-0 right-0 h-full w-80 bg-gray-900 border-l border-gray-700 p-6 shadow-2xl overflow-y-auto">
+  <button onclick="fecharInfo()" class="text-red-400 hover:text-red-500 font-bold mb-4">Fechar ✖</button>
+  <div id="digimon-info" class="text-gray-200">
+    <!-- Informações do digimon aparecem aqui -->
+  </div>
+</div>
+
+  <script src="./script/continuarJornada.js"></script>
+</body>
+</html>

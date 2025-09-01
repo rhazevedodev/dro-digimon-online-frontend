@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Settings - Digimon Revolution</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./css/settings.css" />
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+
+  <!-- HEADER -->
+  <header class="flex items-center justify-between p-4 bg-gray-800 shadow-md">
+    <button id="btn-back" class="flex items-center gap-2 hover:opacity-90" onclick="window.location.href='home.html'">
+      <i data-feather="arrow-left"></i>
+      <span class="hidden sm:inline">Voltar</span>
+    </button>
+    <h1 class="text-xl font-bold">Configurações</h1>
+    <span class="opacity-0"><i data-feather="arrow-left"></i></span>
+  </header>
+
+  <!-- MAIN -->
+  <main class="flex-1 p-4 sm:p-6 max-w-3xl mx-auto w-full space-y-6">
+
+    <!-- Conta -->
+    <section class="section">
+      <h2 class="section-title">Conta</h2>
+
+      <!-- Aviso claro sobre edição -->
+      <div class="callout">
+        <i data-feather="info" class="w-4 h-4"></i>
+        <p>Use os campos abaixo para <strong>alterar seu apelido no jogo</strong> e <strong>trocar o e-mail da sua conta</strong>. Depois, clique em <em>Salvar</em>.</p>
+      </div>
+
+      <!-- Campos editáveis de Jogador e E-mail -->
+      <div class="grid sm:grid-cols-2 gap-4 mt-3">
+        <div class="input-wrap">
+          <label class="label" for="acc-name">Altere seu apelido no jogo</label>
+          <span class="input-icon"><i data-feather="user"></i></span>
+          <input
+            id="acc-name"
+            class="input has-icon"
+            type="text"
+            placeholder="Seu novo apelido"
+            aria-describedby="acc-name-help"
+          />
+          <small id="acc-name-help" class="hint">
+            Esse é o nome que outros jogadores verão. 2 a 20 caracteres (letras, números, _ e -).
+          </small>
+        </div>
+
+        <div class="input-wrap">
+          <label class="label" for="acc-email">Troque o e-mail da sua conta</label>
+          <span class="input-icon"><i data-feather="mail"></i></span>
+          <input
+            id="acc-email"
+            class="input has-icon"
+            type="email"
+            placeholder="nome@exemplo.com"
+            aria-describedby="acc-email-help"
+          />
+          <small id="acc-email-help" class="hint">
+            Usaremos este e-mail para login e recuperação de conta. Informe um endereço válido.
+          </small>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Alterar senha -->
+      <h3 class="subsection-title">Alterar Senha</h3>
+      <div class="grid sm:grid-cols-3 gap-4">
+        <div>
+          <label class="label" for="pwd-current">Senha atual</label>
+          <input id="pwd-current" class="input" type="password" placeholder="••••••••" />
+          <small class="hint">Confirme sua identidade para continuar.</small>
+        </div>
+        <div>
+          <label class="label" for="pwd-new">Nova senha</label>
+          <input id="pwd-new" class="input" type="password" placeholder="Mín. 6 caracteres" />
+        </div>
+        <div>
+          <label class="label" for="pwd-confirm">Confirmar nova senha</label>
+          <input id="pwd-confirm" class="input" type="password" placeholder="Repita a nova senha" />
+        </div>
+      </div>
+
+      <div class="mt-4 flex flex-wrap gap-3">
+        <button id="btn-change-password" class="btn btn-primary">
+          <i data-feather="key" class="w-4 h-4"></i>
+          Alterar senha
+        </button>
+        <button id="btn-logout" class="btn btn-danger">
+          <i data-feather="log-out" class="w-4 h-4"></i>
+          Sair da conta
+        </button>
+      </div>
+    </section>
+
+    <!-- Geral -->
+    <section class="section">
+      <h2 class="section-title">Geral</h2>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label class="label" for="lang">Idioma</label>
+          <select id="lang" class="input">
+            <option value="pt-BR">Português (Brasil)</option>
+            <option value="en-US">English (US)</option>
+            <option value="es-ES">Español</option>
+          </select>
+        </div>
+        <div>
+          <label class="label" for="theme">Tema</label>
+          <select id="theme" class="input">
+            <option value="dark">Escuro</option>
+            <option value="light">Claro</option>
+            <option value="system">Sistema</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Notificações & Privacidade -->
+    <section class="section">
+      <h2 class="section-title">Notificações & Privacidade</h2>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div class="flex items-center gap-3">
+          <input id="notify-push" type="checkbox" class="toggle">
+          <label for="notify-push" class="label !mb-0">Notificações push</label>
+        </div>
+        <div class="flex items-center gap-3">
+          <input id="notify-email" type="checkbox" class="toggle">
+          <label for="notify-email" class="label !mb-0">Notificações por e-mail</label>
+        </div>
+        <div class="flex items-center gap-3">
+          <input id="public-profile" type="checkbox" class="toggle">
+          <label for="public-profile" class="label !mb-0">Perfil público</label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ações -->
+    <div class="actions-row flex flex-col sm:flex-row gap-3 justify-end">
+      <button id="btn-reset" class="btn btn-ghost">Restaurar padrão</button>
+      <button id="btn-cancel" class="btn btn-outline">Cancelar</button>
+      <button id="btn-save" class="btn btn-primary">Salvar</button>
+    </div>
+
+  </main>
+
+  <script src="./js/settings.js"></script>
+  <script>feather.replace();</script>
+</body>
+</html>

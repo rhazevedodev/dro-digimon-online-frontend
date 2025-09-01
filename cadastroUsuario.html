@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Usuário</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-6">
+
+  <div class="bg-gray-800 p-8 rounded-2xl shadow-lg w-full max-w-md">
+    <h1 class="text-2xl font-bold text-center mb-6">Criar Conta</h1>
+
+    <form id="cadastro-form" class="space-y-4">
+      <div>
+        <label class="block text-sm mb-1" for="nome">Nome</label>
+        <input id="nome" type="text" placeholder="Digite seu nome"
+               class="w-full p-3 rounded-xl bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+
+      <div>
+        <label class="block text-sm mb-1" for="email">Email</label>
+        <input id="email" type="email" placeholder="Digite seu email"
+               class="w-full p-3 rounded-xl bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+
+      <div>
+        <label class="block text-sm mb-1" for="senha">Senha</label>
+        <input id="senha" type="password" placeholder="Digite sua senha"
+               class="w-full p-3 rounded-xl bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+
+      <div>
+        <label class="block text-sm mb-1" for="confirmar-senha">Confirmar Senha</label>
+        <input id="confirmar-senha" type="password" placeholder="Confirme sua senha"
+               class="w-full p-3 rounded-xl bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+
+      <button type="submit"
+              class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition">
+        Cadastrar
+      </button>
+    </form>
+
+    <p class="text-sm text-gray-400 text-center mt-6">
+      Já tem conta?
+      <a href="login.html" class="text-blue-400 hover:underline">Entrar</a>
+    </p>
+  </div>
+
+  <script>
+    document.getElementById("cadastro-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      
+      const nome = document.getElementById("nome").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const senha = document.getElementById("senha").value;
+      const confirmar = document.getElementById("confirmar-senha").value;
+
+      if (!nome || !email || !senha || !confirmar) {
+        alert("Por favor, preencha todos os campos.");
+        return;
+      }
+
+      if (senha !== confirmar) {
+        alert("As senhas não coincidem.");
+        return;
+      }
+
+      // Simulação de cadastro
+      alert("Usuário cadastrado com sucesso!");
+      window.location.href = "login.html";
+    });
+  </script>
+</body>
+</html>

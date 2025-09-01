@@ -1,0 +1,149 @@
+.section {
+    background-color: #1f2937; /* gray-800 */
+    border-radius: 0.75rem;
+    padding: 1rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,.25);
+  }
+  .section-title {
+    font-weight: 700;
+    margin-bottom: .75rem;
+    font-size: 1.125rem;
+  }
+  .subsection-title {
+    font-weight: 700;
+    margin-bottom: .5rem;
+  }
+  .label {
+    display: block;
+    margin-bottom: .5rem;
+    color: #9ca3af; /* gray-400 */
+    font-size: .9rem;
+  }
+  .input {
+    width: 100%;
+    background-color: #374151; /* gray-700 */
+    border: 1px solid #4b5563; /* gray-600 */
+    border-radius: .75rem;
+    padding: .6rem .8rem;
+    outline: none;
+  }
+  .input:focus {
+    border-color: #60a5fa; /* blue-400 */
+    box-shadow: 0 0 0 2px rgba(96,165,250,.25);
+  }
+  .input.error {
+    border-color: #ef4444; /* red-500 */
+    box-shadow: 0 0 0 2px rgba(239,68,68,.25);
+  }
+  .hint {
+    display: block;
+    margin-top: .4rem;
+    font-size: .8rem;
+    color: #9ca3af; /* gray-400 */
+  }
+  .divider {
+    margin: 1rem 0;
+    border-top: 1px solid #374151;
+  }
+  
+  /* Callout explicativo no topo da seção */
+  .callout {
+    display: flex;
+    align-items: flex-start;
+    gap: .5rem;
+    background: rgba(59,130,246,.12); /* azul translúcido */
+    border: 1px solid rgba(59,130,246,.35);
+    border-radius: .75rem;
+    padding: .75rem .9rem;
+    color: #bfdbfe; /* blue-200 */
+  }
+  
+  /* Input com ícone embutido */
+  .input-wrap { position: relative; }
+  .input-icon {
+    position: absolute;
+    left: .75rem;
+    top: 2.6rem; /* alinha verticalmente com o campo */
+    opacity: .7;
+    pointer-events: none;
+  }
+  .input.has-icon {
+    padding-left: 2.4rem; /* espaço pro ícone */
+  }
+  
+  /* Zera variações nativas em mobile */
+  button {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  
+  /* Base comum dos botões para alinhar texto/ícone */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    padding: .65rem 1.2rem;
+    border-radius: .75rem;
+    font-weight: 700;
+    line-height: 1;
+    vertical-align: middle;
+    min-height: 44px; /* toque confortável no mobile */
+  }
+  
+  /* Variantes */
+  .btn-primary {
+    background: #2563eb;
+    color: #fff;
+    transition: transform .1s ease, opacity .15s ease;
+  }
+  .btn-primary:hover { opacity: .95; transform: translateY(-1px); }
+  
+  .btn-outline {
+    border: 1px solid #4b5563;
+    color: #e5e7eb;
+  }
+  .btn-ghost {
+    background: #374151;
+    color: #e5e7eb;
+  }
+  .btn-danger {
+    background: #dc2626;
+    color: #fff;
+  }
+  
+  /* Ícones dentro de botões */
+  .btn svg, .btn i {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  
+  /* Toggle custom */
+  .toggle {
+    appearance: none;
+    width: 2.75rem;
+    height: 1.5rem;
+    background: #4b5563;
+    border-radius: 999px;
+    position: relative;
+    cursor: pointer;
+    transition: background .2s ease;
+    outline: none;
+  }
+  .toggle::after {
+    content: "";
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 1.2rem; height: 1.2rem;
+    background: #111827; /* gray-900 */
+    border-radius: 999px;
+    transition: transform .2s ease;
+  }
+  .toggle:checked { background: #2563eb; }
+  .toggle:checked::after { transform: translateX(1.25rem); }
+  
+  /* Ajuste específico para mobile: botões 100% na barra de ações */
+  @media (max-width: 640px) {
+    .actions-row .btn { width: 100%; }
+  }
+  

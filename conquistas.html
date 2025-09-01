@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Conquistas - Digimon Revolution</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./css/conquistas.css" />
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+
+  <!-- HEADER -->
+  <header class="flex items-center justify-between p-4 bg-gray-800 shadow-md">
+    <button onclick="window.location.href='home.html'" class="flex items-center gap-2 hover:opacity-90">
+      <i data-feather="arrow-left"></i>
+      <span class="hidden sm:inline">Voltar</span>
+    </button>
+    <h1 class="text-xl font-bold">Conquistas</h1>
+    <div class="flex items-center gap-3">
+      <span class="text-sm text-gray-300 hidden sm:inline">Recompensas</span>
+      <span id="wallet-bits" class="chip">0 Bits</span>
+      <span id="wallet-crystals" class="chip">0 Cristais</span>
+    </div>
+  </header>
+
+  <!-- CONTROLS -->
+  <section class="p-4 sm:p-6 max-w-6xl mx-auto w-full">
+    <div class="controls grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div class="relative">
+        <i data-feather="search" class="icon-left"></i>
+        <input id="search" class="input has-icon" type="text" placeholder="Buscar conquista..." />
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <select id="filter-status" class="input">
+          <option value="all">Status: Todas</option>
+          <option value="in_progress">Em progresso</option>
+          <option value="completed">Concluídas</option>
+          <option value="claimed">Resgatadas</option>
+        </select>
+
+        <select id="filter-category" class="input">
+          <option value="all">Categoria: Todas</option>
+          <option value="battle">Batalha</option>
+          <option value="evolution">Evolução</option>
+          <option value="collection">Coleção</option>
+          <option value="exploration">Exploração</option>
+          <option value="social">Social</option>
+        </select>
+      </div>
+
+      <div class="flex gap-3">
+        <button id="btn-clear" class="btn btn-ghost w-full">Limpar filtros</button>
+        <button id="btn-claim-all" class="btn btn-primary w-full">Resgatar tudo</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIST -->
+  <main class="flex-1 p-4 sm:p-6 max-w-6xl mx-auto w-full">
+    <div id="achievements-list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    <div id="empty-state" class="hidden text-center text-gray-400 mt-10">
+      <i data-feather="inbox" class="w-10 h-10 mx-auto mb-2"></i>
+      <p>Nenhuma conquista encontrada com os filtros atuais.</p>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="p-4 bg-gray-800 text-center text-sm text-gray-400">
+    Dica: algumas conquistas têm níveis — continue jogando para subir o tier da mesma conquista!
+  </footer>
+
+  <script src="./script/conquistas.js"></script>
+  <script>feather.replace();</script>
+</body>
+</html>

@@ -1,0 +1,458 @@
+/* Inputs */
+.input {
+  width: 100%;
+  background-color: #374151;
+  border: 1px solid #4b5563;
+  border-radius: .75rem;
+  padding: .6rem .8rem;
+  color: #e5e7eb;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, .25);
+}
+
+/* Left icon helper */
+.icon-left {
+  position: absolute;
+  left: .75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: .8;
+  pointer-events: none;
+}
+
+.has-icon {
+  padding-left: 2.4rem;
+}
+
+/* Badge & Buttons */
+.badge {
+  font-size: .75rem;
+  padding: .15rem .5rem;
+  border-radius: .5rem;
+  border: 1px solid #4b5563;
+  background: #111827;
+  color: #e5e7eb;
+}
+
+.chip {
+  background: #374151;
+  border: 1px solid #4b5563;
+  padding: .35rem .6rem;
+  border-radius: .5rem;
+  font-size: .85rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  padding: .65rem 1rem;
+  border-radius: .75rem;
+  font-weight: 800;
+  min-height: 44px;
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.btn-ghost {
+  background: #374151;
+  color: #e5e7eb;
+}
+
+.btn-danger {
+  background: #dc2626;
+  color: #fff;
+}
+
+.btn-outline {
+  border: 1px solid #4b5563;
+  color: #e5e7eb;
+}
+
+.btn:hover {
+  opacity: .95;
+}
+
+/* Cards */
+.card {
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: .75rem;
+  padding: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, .25);
+}
+
+.card-title {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  font-weight: 800;
+}
+
+/* Lists */
+.list li {
+  margin: .25rem 0;
+  color: #d1d5db;
+}
+
+.feed li {
+  padding: .4rem 0;
+  border-bottom: 1px dashed #374151;
+  color: #d1d5db;
+}
+
+.feed li:last-child {
+  border-bottom: none;
+}
+
+/* Progress bars */
+.progress {
+  width: 100%;
+  height: .9rem;
+  background: #374151;
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #a855f7, #7c3aed);
+  transition: width .4s ease;
+}
+
+.progress-fill.green {
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.progress-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .7rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+/* Clan hero */
+.clan-hero {
+  display: grid;
+  grid-template-columns: 96px 1fr auto;
+  gap: 1rem;
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: .75rem;
+  padding: 1rem;
+  align-items: center;
+}
+
+.emblem {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: .75rem;
+  border: 1px solid #374151;
+  background: #111827;
+}
+
+.hero-info .meta {
+  font-size: .8rem;
+  color: #9ca3af;
+}
+
+.hero-info .value {
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+/* Tabs */
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: .75rem;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  padding: .75rem;
+  font-weight: 800;
+  color: #e5e7eb;
+  border-right: 1px solid #374151;
+}
+
+.tab:last-child {
+  border-right: none;
+}
+
+.tab.active {
+  background: #111827;
+  color: #93c5fd;
+}
+
+/* Member card */
+.member-card {
+  background: #111827;
+  border: 1px solid #374151;
+  border-radius: .75rem;
+  padding: .75rem;
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  gap: .75rem;
+  align-items: center;
+}
+
+.member-card .avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: .75rem;
+  object-fit: cover;
+  border: 1px solid #374151;
+}
+
+.member-name {
+  font-weight: 800;
+}
+
+.member-meta {
+  font-size: .85rem;
+  color: #9ca3af;
+  margin-top: .15rem;
+}
+
+.member-actions {
+  display: flex;
+  gap: .4rem;
+  flex-wrap: wrap;
+}
+
+/* Barra de contribuição dentro do card de membro: não ocupar a largura toda */
+.member-contrib {
+  width: 100%;
+  max-width: 220px;   /* limite visual no desktop/tablet */
+}
+
+/* Mission card */
+.mission {
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: .75rem;
+  padding: .9rem;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.mission .title {
+  font-weight: 800;
+}
+
+.mission .meta {
+  color: #9ca3af;
+  font-size: .85rem;
+}
+
+/* Ranking item */
+.rank-item {
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  gap: .75rem;
+  align-items: center;
+  background: #111827;
+  border: 1px solid #374151;
+  border-radius: .75rem;
+  padding: .6rem .75rem;
+}
+
+.rank-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: .5rem;
+  display: grid;
+  place-items: center;
+  background: #1f2937;
+  border: 1px solid #374151;
+}
+
+/* CHAT */
+.chat-card {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* --- CHAT (modo padrão em coluna) --- */
+.chat-list {
+  height: 360px;
+  overflow-y: auto;
+  padding-right: .25rem;
+  background: #111827;
+  border: 1px solid #374151;
+  border-radius: .75rem;
+  padding: .75rem;
+  display: block;
+  /* garante fluxo vertical padrão */
+}
+
+.msg {
+  width: 100%;
+  /* ocupa a largura toda */
+  max-width: 100%;
+  margin: .35rem 0;
+  /* empilha verticalmente */
+  padding: .6rem .8rem;
+  border-radius: .6rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
+  display: block;
+  /* bloco, não inline-flex */
+}
+
+.msg .meta {
+  font-size: .72rem;
+  opacity: .8;
+  margin-bottom: .25rem;
+}
+
+/* Você e Eles agora compartilham alinhamento e largura.
+   Mantive cores diferentes só para referência visual.   */
+.msg.you {
+  background: #1f3b82;
+  /* azul mais escuro para “você” */
+  color: #ffffff;
+  border: 1px solid #27498f;
+}
+
+.msg.them {
+  background: #1f2937;
+  /* cinza para “outros” */
+  color: #e5e7eb;
+  border: 1px solid #374151;
+}
+
+/* Remover estilos antigos que causavam alinhamento à direita/esquerda */
+.msg.you, .msg.them {
+  margin-left: 0;               /* remove "encostar à direita" do antigo */
+  border-bottom-right-radius: .6rem;
+  border-bottom-left-radius: .6rem;
+}
+
+.chat-input {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: .5rem;
+}
+
+/* SHOP */
+.shop-balance {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+  margin-top: .5rem;
+}
+
+.shop-card {
+  background: #111827;
+  border: 1px solid #374151;
+  border-radius: .75rem;
+  padding: .75rem;
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  gap: .75rem;
+  align-items: center;
+}
+
+.shop-card img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: .5rem;
+  border: 1px solid #374151;
+}
+
+.shop-title {
+  font-weight: 800;
+}
+
+.shop-meta {
+  color: #9ca3af;
+  font-size: .85rem;
+}
+
+.price {
+  font-weight: 800;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .clan-hero {
+    grid-template-columns: 64px 1fr;
+  }
+
+  .hero-actions {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .tabs {
+    grid-template-columns: repeat(4, 1fr);
+    row-gap: 4px;
+  }
+}
+
+@media (max-width: 640px) {
+  .member-card {
+    grid-template-columns: 48px 1fr;
+    grid-template-areas: "av name" "av meta" "actions actions";
+  }
+
+  .member-card .avatar {
+    grid-area: av;
+    width: 48px;
+    height: 48px;
+  }
+
+  .member-actions {
+    grid-area: actions;
+    width: 100%;
+  }
+
+  .member-actions .btn {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .member-contrib { max-width: 100%; }
+
+
+  .shop-card {
+    grid-template-columns: 48px 1fr;
+  }
+}

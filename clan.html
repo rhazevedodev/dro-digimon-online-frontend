@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clã - Digimon Revolution</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./css/clan.css" />
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+
+    <!-- HEADER -->
+    <header class="flex items-center justify-between p-4 bg-gray-800 shadow-md">
+        <button id="btn-back" class="flex items-center gap-2 hover:opacity-90">
+            <i data-feather="arrow-left"></i>
+            <span class="hidden sm:inline">Voltar</span>
+        </button>
+        <h1 class="text-xl font-bold">Clã</h1>
+        <span class="opacity-0"><i data-feather="arrow-left"></i></span>
+    </header>
+
+    <!-- CLAN HERO -->
+    <section class="p-4 sm:p-6 max-w-6xl mx-auto w-full">
+        <div class="clan-hero">
+            <img id="clan-emblem" class="emblem" src="./images/emblems/emblem1.png" alt="Brasão do Clã">
+            <div class="hero-info">
+                <div class="flex items-center gap-3 flex-wrap">
+                    <h2 id="clan-name" class="text-2xl font-extrabold">--</h2>
+                    <span id="clan-tag" class="badge">--</span>
+                </div>
+                <p id="clan-desc" class="text-gray-300 mt-1">--</p>
+
+                <div class="grid sm:grid-cols-3 gap-3 mt-4">
+                    <div>
+                        <p class="meta">Nível do Clã</p>
+                        <p id="clan-level" class="value">--</p>
+                    </div>
+                    <div>
+                        <p class="meta">Membros</p>
+                        <p id="clan-members" class="value">--/--</p>
+                    </div>
+                    <div>
+                        <p class="meta">Online agora</p>
+                        <p id="clan-online" class="value">--</p>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <p class="mb-1">Exp do Clã</p>
+                    <div class="progress">
+                        <div id="clan-xp-bar" class="progress-fill"></div>
+                        <div id="clan-xp-text" class="progress-text">0/0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-actions">
+                <button id="btn-invite" class="btn btn-ghost"><i
+                        data-feather="user-plus"></i><span>Convidar</span></button>
+                <button id="btn-donate" class="btn btn-primary"><i data-feather="gift"></i><span>Doar</span></button>
+                <button id="btn-leave" class="btn btn-danger"><i data-feather="log-out"></i><span>Sair</span></button>
+                <button id="btn-join" class="btn btn-primary hidden"><i
+                        data-feather="log-in"></i><span>Entrar</span></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- TABS -->
+    <section class="p-4 pt-0 sm:px-6 max-w-6xl mx-auto w-full">
+        <div class="tabs">
+            <button class="tab active" data-tab="overview"><i data-feather="home"></i>Visão Geral</button>
+            <button class="tab" data-tab="members"><i data-feather="users"></i>Membros</button>
+            <button class="tab" data-tab="missions"><i data-feather="target"></i>Missões</button>
+            <button class="tab" data-tab="chat"><i data-feather="message-circle"></i>Chat</button>
+            <button class="tab" data-tab="shop"><i data-feather="shopping-bag"></i>Loja</button>
+            <button class="tab" data-tab="donations"><i data-feather="heart"></i>Doações</button>
+            <button class="tab" data-tab="ranking"><i data-feather="award"></i>Ranking</button>
+            <button class="tab" data-tab="settings">
+                <i data-feather="settings"></i>Configurações
+            </button>
+        </div>
+    </section>
+
+    <!-- CONTENT -->
+    <main class="flex-1 p-4 sm:p-6 max-w-6xl mx-auto w-full space-y-6">
+
+        <!-- OVERVIEW -->
+        <div id="tab-overview">
+            <div class="grid lg:grid-cols-3 gap-4">
+                <!-- Anúncio / Motd -->
+                <div class="card lg:col-span-2">
+                    <div class="card-title flex items-center justify-between">
+                        <span class="inline-flex items-center gap-2">
+                            <i data-feather="megaphone"></i><span>Anúncio do Líder</span>
+                        </span>
+
+                        <!-- Botão só aparece para o líder (controlado no JS) -->
+                        <button id="btn-motd-edit" class="btn btn-ghost px-2 py-1 text-sm hidden">
+                            <i data-feather="edit-2"></i><span>Editar</span>
+                        </button>
+                    </div>
+
+                    <!-- Visualização -->
+                    <p id="clan-motd" class="text-gray-200 mt-2">--</p>
+
+                    <!-- Edição (fica oculta até clicar em Editar) -->
+                    <div id="motd-edit-wrap" class="hidden mt-3">
+                        <textarea id="motd-textarea" class="input" rows="3" maxlength="240"
+                            placeholder="Escreva o anúncio do clã (máx. 240 caracteres)"></textarea>
+                        <div class="flex gap-2 mt-2">
+                            <button id="btn-motd-save" class="btn btn-primary">
+                                <i data-feather="save"></i><span>Salvar</span>
+                            </button>
+                            <button id="btn-motd-cancel" class="btn btn-outline">
+                                <i data-feather="x"></i><span>Cancelar</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bônus do clã -->
+                <div class="card">
+                    <div class="card-title"><i data-feather="zap"></i><span>Bônus Ativos</span></div>
+                    <ul id="clan-perks" class="list mt-2"></ul>
+                </div>
+
+                <!-- Progresso semanal -->
+                <div class="card">
+                    <div class="card-title"><i data-feather="calendar"></i><span>Progresso Semanal</span></div>
+                    <p class="text-gray-300 mb-1">Contribuições</p>
+                    <div class="progress">
+                        <div id="weekly-bar" class="progress-fill green"></div>
+                        <div id="weekly-text" class="progress-text">0/0</div>
+                    </div>
+                    <p id="weekly-reset" class="text-xs text-gray-400 mt-2"></p>
+                </div>
+
+                <!-- Últimas atividades -->
+                <div class="card lg:col-span-2">
+                    <div class="card-title"><i data-feather="activity"></i><span>Atividades Recentes</span></div>
+                    <ul id="activity-feed" class="feed mt-2"></ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- MEMBERS -->
+        <div id="tab-members" class="hidden">
+            <div class="flex flex-wrap gap-3 items-center mb-3">
+                <div class="relative flex-1 min-w-[220px]">
+                    <i data-feather="search" class="icon-left"></i>
+                    <input id="member-search" class="input has-icon" type="text" placeholder="Buscar por nome..." />
+                </div>
+                <select id="member-role" class="input w-full sm:w-[220px]">
+                    <option value="all">Todos os cargos</option>
+                    <option value="leader">Líder</option>
+                    <option value="officer">Oficial</option>
+                    <option value="member">Membro</option>
+                </select>
+            </div>
+
+            <div id="members-list" class="space-y-3"></div>
+            <div id="members-empty" class="hidden text-center text-gray-400 mt-6">
+                <i data-feather="inbox" class="w-10 h-10 mx-auto mb-2"></i>
+                <p>Nenhum membro encontrado.</p>
+            </div>
+        </div>
+
+        <!-- MISSIONS -->
+        <div id="tab-missions" class="hidden">
+            <div id="missions-list" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            <div id="missions-empty" class="hidden text-center text-gray-400 mt-6">
+                <i data-feather="flag" class="w-10 h-10 mx-auto mb-2"></i>
+                <p>Nenhuma missão disponível.</p>
+            </div>
+        </div>
+
+        <!-- CHAT -->
+        <div id="tab-chat" class="hidden">
+            <div class="card chat-card">
+                <div class="chat-header">
+                    <div class="card-title"><i data-feather="message-circle"></i><span>Chat do Clã</span></div>
+                    <div id="chat-participants" class="text-sm text-gray-300"></div>
+                </div>
+
+                <div id="chat-list" class="chat-list"><!-- mensagens via JS --></div>
+
+                <div class="chat-input">
+                    <input id="chat-text" type="text" class="input" placeholder="Escreva uma mensagem..." />
+                    <button id="chat-send" class="btn btn-primary"><i
+                            data-feather="send"></i><span>Enviar</span></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SHOP -->
+        <div id="tab-shop" class="hidden">
+            <div class="card">
+                <div class="card-title"><i data-feather="shopping-bag"></i><span>Loja do Clã</span></div>
+                <div class="shop-balance">
+                    <span id="bal-contrib" class="chip">Contribuição: 0</span>
+                </div>
+                <div id="shop-list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-3"><!-- itens via JS --></div>
+                <div id="shop-empty" class="hidden text-center text-gray-400 mt-6">
+                    <i data-feather="shopping-cart" class="w-10 h-10 mx-auto mb-2"></i>
+                    <p>Nenhum item disponível.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- DONATIONS -->
+        <div id="tab-donations" class="hidden">
+            <div class="card">
+                <div class="card-title"><i data-feather="gift"></i><span>Contribuir com o Clã</span></div>
+                <div class="grid sm:grid-cols-3 gap-3 mt-3">
+                    <button class="btn btn-outline" data-donate="bits-100">+100 Bits</button>
+                    <button class="btn btn-outline" data-donate="bits-500">+500 Bits</button>
+                    <button class="btn btn-outline" data-donate="crystal-5">+5 Cristais</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><i data-feather="list"></i><span>Histórico de Doações</span></div>
+                <ul id="donations-log" class="feed mt-2"></ul>
+            </div>
+        </div>
+
+        <!-- RANKING -->
+        <div id="tab-ranking" class="hidden">
+            <div id="ranking-list" class="space-y-3"></div>
+            <div id="ranking-empty" class="hidden text-center text-gray-400 mt-6">
+                <i data-feather="award" class="w-10 h-10 mx-auto mb-2"></i>
+                <p>Ranking indisponível.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="p-4 bg-gray-800 text-center text-sm text-gray-400">
+        Dica: doações semanais ajudam a subir o nível do seu clã e desbloquear bônus!
+    </footer>
+
+    <script src="./script/clan.js"></script>
+    <script>feather.replace();</script>
+</body>
+
+</html>

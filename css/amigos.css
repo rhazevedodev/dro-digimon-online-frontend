@@ -1,0 +1,131 @@
+/* Inputs */
+.input {
+    width: 100%;
+    background-color: #374151;
+    border: 1px solid #4b5563;
+    border-radius: .75rem;
+    padding: .6rem .8rem;
+    outline: none;
+    color: #e5e7eb;
+  }
+  .input:focus { border-color: #60a5fa; box-shadow: 0 0 0 2px rgba(96,165,250,.25); }
+  
+  /* Ícone left */
+  .icon-left {
+    position: absolute;
+    left: .75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: .8;
+    pointer-events: none;
+  }
+  .has-icon { padding-left: 2.4rem; }
+  
+  /* Botões */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    padding: .65rem 1rem;
+    border-radius: .75rem;
+    font-weight: 700;
+    line-height: 1;
+    min-height: 44px;
+  }
+  .btn-primary { background: #2563eb; color: #fff; }
+  .btn-ghost { background: #374151; color: #e5e7eb; }
+  .btn-danger { background: #dc2626; color: #fff; }
+  .btn-outline { border: 1px solid #4b5563; color: #e5e7eb; }
+  .btn:hover { opacity: .9; }
+  
+  /* Chips e caixas */
+  .chip { background: #374151; border: 1px solid #4b5563; padding: .25rem .5rem; border-radius: .5rem; }
+  .tool-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: .75rem; background: #1f2937; border: 1px solid #374151;
+    border-radius: .75rem; padding: .75rem .9rem; box-shadow: 0 4px 10px rgba(0,0,0,.25);
+  }
+  .chip-label { display: inline-flex; align-items: center; gap: .5rem; font-weight: 600; }
+  .tool-actions { display: flex; gap: .5rem; }
+  
+  .add-box {
+    display: flex; gap: .75rem; flex-wrap: wrap;
+    background: #1f2937; border: 1px solid #374151; border-radius: .75rem;
+    padding: .75rem; align-items: center;
+  }
+  .add-input-wrap { position: relative; flex: 1 1 280px; }
+  
+  /* Tabs */
+  .tabs {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    background: #1f2937; border: 1px solid #374151; border-radius: .75rem;
+  }
+  .tab {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    padding: .75rem; font-weight: 700; color: #e5e7eb;
+    border-right: 1px solid #374151;
+  }
+  .tab:last-child { border-right: none; }
+  .tab.active { background: #111827; color: #93c5fd; }
+  
+  /* Card */
+  .card {
+    background: #1f2937; border: 1px solid #374151; border-radius: .75rem;
+    padding: .75rem; display: flex; align-items: center; gap: .75rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,.25);
+  }
+  .avatar {
+    width: 56px; height: 56px; border-radius: .75rem; object-fit: cover;
+    border: 1px solid #374151; background: #111827;
+  }
+  .title { font-weight: 800; }
+  .meta { color: #9ca3af; font-size: .85rem; margin-top: .15rem; }
+  
+  .badge {
+    font-size: .7rem; padding: .15rem .5rem; border-radius: .5rem;
+    border: 1px solid #4b5563; background: #111827; color: #e5e7eb;
+  }
+  .badge.online { border-color: #22c55e; color: #bbf7d0; }
+  .badge.offline { border-color: #6b7280; color: #d1d5db; }
+  
+  /* Status row com dot */
+  .status-row { display: flex; align-items: center; gap: .5rem; margin-top: .15rem; }
+  .status-dot { width: .55rem; height: .55rem; border-radius: 999px; }
+  .status-online { background: #22c55e; }
+  .status-offline { background: #6b7280; }
+  
+  /* Ações */
+  .card-actions { margin-left: auto; display: flex; gap: .5rem; flex-wrap: wrap; }
+  .card-actions .btn { min-width: 44px; }
+  
+  /* Estado vazio */
+  #empty-state i { opacity: .7; }
+  
+  /* ============ Mobile Overrides ============ */
+  @media (max-width: 640px) {
+    .card {
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      grid-template-areas:
+        "avatar header"
+        "avatar meta"
+        "actions actions";
+      gap: .6rem .75rem;
+      align-items: start;
+    }
+    .card .avatar { grid-area: avatar; width: 64px; height: 64px; }
+    .card .hdr { grid-area: header; }
+    .card .meta-wrap { grid-area: meta; }
+    .card-actions {
+      grid-area: actions;
+      width: 100%;
+      display: flex;
+      gap: .5rem;
+      justify-content: stretch;
+      margin-left: 0;
+    }
+    .card-actions .btn { flex: 1 1 auto; min-width: 0; }
+    .btn .btn-label { display: none; } /* oculta texto, deixa só ícone */
+  }
+  
