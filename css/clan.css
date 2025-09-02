@@ -81,6 +81,12 @@
   opacity: .95;
 }
 
+.btn[disabled] {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+
 /* Cards */
 .card {
   background: #1f2937;
@@ -250,7 +256,8 @@
 /* Barra de contribuição dentro do card de membro: não ocupar a largura toda */
 .member-contrib {
   width: 100%;
-  max-width: 220px;   /* limite visual no desktop/tablet */
+  max-width: 220px;
+  /* limite visual no desktop/tablet */
 }
 
 /* Mission card */
@@ -357,8 +364,10 @@
 }
 
 /* Remover estilos antigos que causavam alinhamento à direita/esquerda */
-.msg.you, .msg.them {
-  margin-left: 0;               /* remove "encostar à direita" do antigo */
+.msg.you,
+.msg.them {
+  margin-left: 0;
+  /* remove "encostar à direita" do antigo */
   border-bottom-right-radius: .6rem;
   border-bottom-left-radius: .6rem;
 }
@@ -449,7 +458,9 @@
     min-width: 0;
   }
 
-  .member-contrib { max-width: 100%; }
+  .member-contrib {
+    max-width: 100%;
+  }
 
 
   .shop-card {
