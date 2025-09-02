@@ -12,7 +12,7 @@ const MOCK_CLAN = {
     { id: "u1", name: "Rafael", role: "leader", level: 32, avatar: "./images/digimons/rookies/renamon.jpg", online: true, contribWeek: 850 },
     { id: "u2", name: "Agus", role: "officer", level: 28, avatar: "./images/digimons/rookies/agumon.jpg", online: false, contribWeek: 420 },
     { id: "u3", name: "Gabu", role: "member", level: 21, avatar: "./images/digimons/rookies/gabumon.jpg", online: true, contribWeek: 1200 },
-    { id: "u4", name: "Mon", role: "member", level: 18, avatar: "./images/digimons/rookies/monmon.jpg", online: false, contribWeek: 10000 },
+    { id: "u4", name: "Mon", role: "member", level: 18, avatar: "./images/digimons/rookies/monmon.jpg", online: false, contribWeek: 20000 },
   ],
   capacity: 30,
   perks: [
@@ -20,7 +20,7 @@ const MOCK_CLAN = {
     "+3% chance de drop",
     "Desconto 5% na loja do clã"
   ],
-  weekly: { current: 1450, target: 5000, resetAt: "Dom 23:59" },
+  weekly: { current: 0, target: 5000, resetAt: "Dom 23:59", claimed: false },
   activities: [
     { text: "Rafael doou 500 Bits", when: "há 2h" },
     { text: "Agus completou Missão Épica", when: "há 5h" },
@@ -55,7 +55,7 @@ let PLAYER = {
   id: "u_player",
   name: "Você",
   inClan: true,
-  role: "member",
+  role: "leader",
   wallet: {
     // agora a loja usa só estes pontos
     contributionPoints: 1800
@@ -150,11 +150,8 @@ function renderOverview(c) {
   const perks = $("clan-perks"); perks.innerHTML = "";
   c.perks.forEach(p => { const li = document.createElement("li"); li.textContent = p; perks.appendChild(li); });
 
-  // --- PROGRESSO SEMANAL (NOVA LÓGICA) ---
-  // soma de contribuições semanais informadas por membro
+  // --- PROGRESSO SEMANAL (cálculo por soma / (meta * membros)) ---
   const totalContrib = (c.members || []).reduce((sum, m) => sum + (m.contribWeek || 0), 0);
-
-  // meta semanal total = meta definida pelo clã * número de membros
   const membersCount = Math.max(1, (c.members || []).length); // evita 0
   const weeklyTarget = Math.max(1, c.weekly?.target || 0);     // evita 0 / undefined
   const metaTotal = weeklyTarget * membersCount;
@@ -164,6 +161,10 @@ function renderOverview(c) {
   $("weekly-bar").style.width = wP + "%";
   $("weekly-text").textContent = `${totalContrib}/${metaTotal} (${wP}%)`;
   $("weekly-reset").textContent = `Reseta: ${c.weekly?.resetAt || "-"}`;
+
+  const reached = totalContrib >= metaTotal;
+  const alreadyClaimed = !!c.weekly?.claimed;
+  setVisible($("btn-weekly-claim"), canEditMotd && reached && !alreadyClaimed);
 
   const feed = $("activity-feed"); feed.innerHTML = "";
   (c.activities || []).forEach(a => {
@@ -488,7 +489,7 @@ function donate(kind) {
   // Se ainda quiser manter o contador antigo, pode deixar a linha abaixo,
   // mas a barra da visão geral agora NÃO usa mais weekly.current para o cálculo:
   // MOCK_CLAN.weekly.current += points;
-  
+
   renderOverview(MOCK_CLAN);
   renderDonations(MOCK_CLAN);
   alert("Obrigado pela doação!");
@@ -651,6 +652,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
     renderOverview(MOCK_CLAN);
     alert("Anúncio atualizado!");
+  });
+
+  $("btn-weekly-claim").addEventListener("click", () => {
+    if (PLAYER.role !== "leader") return;
+    // Revalida condição
+    const totalContrib = (MOCK_CLAN.members || []).reduce((s, m) => s + (m.contribWeek || 0), 0);
+    const membersCount = Math.max(1, (MOCK_CLAN.members || []).length);
+    const weeklyTarget = Math.max(1, MOCK_CLAN.weekly?.target || 0);
+    const metaTotal = weeklyTarget * membersCount;
+    const reached = totalContrib >= metaTotal;
+  
+    if (!reached) { alert("A meta ainda não foi atingida."); return; }
+    if (MOCK_CLAN.weekly.claimed) { alert("Recompensa semanal já resgatada."); return; }
+  
+    // Marca como resgatado e registra atividade (simulação de backend)
+    MOCK_CLAN.weekly.claimed = true;
+    MOCK_CLAN.activities.unshift({ text: `${PLAYER.name} resgatou a recompensa semanal do clã`, when: "agora" });
+  
+    // (Opcional) Dê uma recompensa simbólica — por exemplo, aplicar um buff/perk temporário:
+    // MOCK_CLAN.perks.push("Buff +10% XP (7d)");
+    // ou adicionar itens ao "cofre do clã" se você tiver esse sistema.
+  
+    renderOverview(MOCK_CLAN);
+    alert("Recompensa semanal resgatada!");
   });
 
   // Chat send + scroll infinito
