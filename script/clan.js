@@ -135,6 +135,7 @@ function renderOverview(c) {
   const perks = $("clan-perks"); perks.innerHTML = "";
   c.perks.forEach(p => { const li = document.createElement("li"); li.textContent = p; perks.appendChild(li); });
 
+  // --- PROGRESSO SEMANAL (cálculo por soma / (meta * membros)) ---
   const totalContrib = (c.members || []).reduce((sum, m) => sum + (m.contribWeek || 0), 0);
   const membersCount = Math.max(1, (c.members || []).length);
   const weeklyTarget = Math.max(1, c.weekly?.target || 0);
@@ -145,9 +146,29 @@ function renderOverview(c) {
   $("weekly-text").textContent = `${totalContrib}/${metaTotal} (${wP}%)`;
   $("weekly-reset").textContent = `Reseta: ${c.weekly?.resetAt || "-"}`;
 
+  // ---------- Estados do botão de resgate ----------
+  const btnClaim = $("btn-weekly-claim");
+  const isLeader = PLAYER.role === "leader";
   const reached = totalContrib >= metaTotal;
-  const alreadyClaimed = !!c.weekly?.claimed;
-  setVisible($("btn-weekly-claim"), canEditMotd && reached && !alreadyClaimed);
+  const claimed = !!c.weekly?.claimed;
+
+  // mostra o botão só para líder (como antes)
+  setVisible(btnClaim, isLeader);
+
+  // define estado/label do botão
+  if (isLeader) {
+    if (claimed) {
+      btnClaim.disabled = true;
+      btnClaim.innerHTML = `<i data-feather="check"></i><span>Recompensa resgatada</span>`;
+    } else if (reached) {
+      btnClaim.disabled = false;
+      btnClaim.innerHTML = `<i data-feather="gift"></i><span>Resgatar Recompensa Semanal</span>`;
+    } else {
+      btnClaim.disabled = true;
+      btnClaim.innerHTML = `<i data-feather="gift"></i><span>Meta não atingida</span>`;
+    }
+    if (window.feather) feather.replace(); // re-render ícones após trocar innerHTML
+  }
 
   const feed = $("activity-feed"); feed.innerHTML = "";
   (c.activities || []).forEach(a => {
@@ -509,8 +530,8 @@ function leaveClan() {
 // ===== Tabs =====
 function setTab(tab) {
   document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === tab));
-  ["overview","members","missions","chat","shop","donations","ranking"]
-    .forEach(id => $("tab-"+id).classList.toggle("hidden", tab !== id));
+  ["overview", "members", "missions", "chat", "shop", "donations", "ranking"]
+    .forEach(id => $("tab-" + id).classList.toggle("hidden", tab !== id));
 }
 
 // ===== Wire =====
@@ -570,7 +591,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   $("btn-weekly-claim").addEventListener("click", () => {
     if (PLAYER.role !== "leader") return;
-    const totalContrib = MOCK_CLAN.members.reduce((s, m) => s + (m.contribWeek||0), 0);
+    const totalContrib = MOCK_CLAN.members.reduce((s, m) => s + (m.contribWeek || 0), 0);
     const membersCount = Math.max(1, MOCK_CLAN.members.length);
     const metaTotal = MOCK_CLAN.weekly.target * membersCount;
     if (totalContrib < metaTotal) return alert("Meta não atingida.");
@@ -582,7 +603,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   $("chat-send").addEventListener("click", sendChatMessage);
-  $("chat-text").addEventListener("keydown", e => { if (e.key==="Enter") sendChatMessage(); });
+  $("chat-text").addEventListener("keydown", e => { if (e.key === "Enter") sendChatMessage(); });
   initChatScroll();
 
   renderHero(MOCK_CLAN);
