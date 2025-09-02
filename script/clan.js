@@ -118,19 +118,46 @@ function renderHero(c) {
   $("clan-xp-bar").style.width = xpP + "%";
   $("clan-xp-text").textContent = `${c.xp.current}/${c.xp.total} (${xpP}%)`;
 
-  setVisible($("btn-join"), !PLAYER.inClan);
-  setVisible($("btn-leave"), PLAYER.inClan);
-  setVisible($("btn-invite"), PLAYER.inClan && (PLAYER.role === "leader" || PLAYER.role === "officer"));
-  const donateBtn = $("btn-donate");
-  const hasDonationsTab = !!$("tab-donations");
-  setVisible(donateBtn, PLAYER.inClan && hasDonationsTab);
+  // ====== VISIBILIDADE / ESTADO DOS BOTÕES ======
+  const inClan = !!PLAYER.inClan;
 
-  const leaveBtn = $("btn-leave");
-  const hasOtherMembers = c.members.some(m => m.id !== PLAYER.id);
-  const mustTransfer = PLAYER.inClan && PLAYER.role === "leader" && hasOtherMembers;
+  // Descobre meu papel olhando a lista (fonte de verdade da UI)
+  const selfMember = c.members.find(x => x.id === PLAYER.id);
+  const myRole = selfMember ? selfMember.role : PLAYER.role; // fallback
 
-  leaveBtn.disabled = mustTransfer;
-  leaveBtn.title = mustTransfer ? "Transfira a liderança para sair do clã" : "";
+  // JOIN: só mostra se NÃO estiver em clã
+  const btnJoin = $("btn-join");
+  if (btnJoin) {
+    btnJoin.classList.toggle("hidden", inClan);
+    btnJoin.disabled = inClan;
+  }
+
+  // LEAVE: só mostra se estiver em clã; só bloqueia se AINDA for líder E houver outros membros
+  const btnLeave = $("btn-leave");
+  if (btnLeave) {
+    btnLeave.classList.toggle("hidden", !inClan);
+    const hasOtherMembers = c.members.some(m => m.id !== PLAYER.id);
+    const mustTransfer = inClan && myRole === "leader" && hasOtherMembers;
+    btnLeave.disabled = !!mustTransfer;
+    btnLeave.title = mustTransfer ? "Transfira a liderança para sair do clã" : "";
+  }
+
+  // INVITE: em clã e (líder ou oficial)
+  const btnInvite = $("btn-invite");
+  if (btnInvite) {
+    const canInvite = inClan && (myRole === "leader" || myRole === "officer");
+    btnInvite.classList.toggle("hidden", !canInvite);
+    btnInvite.disabled = !canInvite;
+  }
+
+  // DONATE: em clã e existir painel de doações
+  const btnDonate = $("btn-donate");
+  if (btnDonate) {
+    const hasDonationsTab = !!$("tab-donations");
+    const canDonate = inClan && hasDonationsTab;
+    btnDonate.classList.toggle("hidden", !canDonate);
+    btnDonate.disabled = !canDonate;
+  }
 }
 
 function renderOverview(c) {
@@ -694,7 +721,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const buyBtn = e.target.closest("[data-buy]");
     if (buyBtn) buyItem(buyBtn.getAttribute("data-buy"));
   });
-  
+
 
   // MOTD
   $("btn-motd-edit").addEventListener("click", () => {

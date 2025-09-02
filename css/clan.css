@@ -418,6 +418,16 @@
   font-weight: 800;
 }
 
+.textarea {
+  width: 100%;
+  color: #fff;          /* texto visível */
+  background: #374151;  /* bg escuro */
+  border: 1px solid #444;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  resize: vertical;     /* só deixa redimensionar pra cima/baixo */
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .clan-hero {
