@@ -45,7 +45,14 @@ const MOCK_CLAN = {
     { id: "s1", name: "Ticket de Raid", img: "./images/items/ticket_raid.png", desc: "Acesso a raid semanal.", price: { contrib: 500 } },
     { id: "s2", name: "Cápsula de Energia", img: "./images/items/caps_energy.png", desc: "+50 de energia imediata.", price: { contrib: 200 } },
     { id: "s3", name: "Booster Épico", img: "./images/items/booster_epic.png", desc: "Aumenta drop por 2h.", price: { contrib: 800 } },
-  ]
+  ],// Configurações do clã (padrões)
+  settings: {
+    minJoinLevel: 10,          // nível mínimo para entrar
+    recruitment: "invite",     // "open" | "closed" | "invite"
+    requireApproval: true,     // exige aprovação manual
+    region: "BR",              // opcional: região/servidor
+    notes: ""                  // observações internas do clã
+  },
 };
 
 // ===== Estado do jogador =====
@@ -397,6 +404,74 @@ function sendChatMessage() {
   renderChat(MOCK_CLAN);
 }
 
+function renderSettings(c) {
+  // Protege caso o bloco não exista
+  c.settings = c.settings || {
+    minJoinLevel: 1,
+    recruitment: "invite",
+    requireApproval: true,
+    region: "BR",
+    notes: ""
+  };
+
+  // Inputs
+  $("set-weekly-target").value = c.weekly?.target ?? 5000;
+  $("set-min-level").value = c.settings.minJoinLevel ?? 1;
+
+  // Radios recruitment
+  const recruitment = c.settings.recruitment || "invite";
+  document.querySelectorAll('input[name="recruitment"]').forEach(r => {
+    r.checked = (r.value === recruitment);
+  });
+
+  // Check e extras
+  $("set-require-approval").checked = !!c.settings.requireApproval;
+  $("set-region").value = c.settings.region || "";
+  $("set-notes").value = c.settings.notes || "";
+
+  if (window.feather) feather.replace();
+}
+
+function saveSettings() {
+  if (PLAYER.role !== "leader" && PLAYER.role !== "officer") {
+    alert("Apenas Líder ou Oficiais podem alterar configurações.");
+    return;
+  }
+
+  // Leitura
+  const weeklyTarget = parseInt($("set-weekly-target").value, 10);
+  const minLv = parseInt($("set-min-level").value, 10);
+  const recRadio = document.querySelector('input[name="recruitment"]:checked');
+  const recruitment = recRadio ? recRadio.value : "invite";
+  const requireApproval = $("set-require-approval").checked;
+  const region = $("set-region").value.trim();
+  const notes = $("set-notes").value.trim();
+
+  // Validações simples
+  if (!Number.isFinite(weeklyTarget) || weeklyTarget < 1) {
+    return alert("Informe uma meta semanal válida (>= 1).");
+  }
+  if (!Number.isFinite(minLv) || minLv < 1) {
+    return alert("Informe um nível mínimo válido (>= 1).");
+  }
+
+  // Persistência no mock
+  MOCK_CLAN.weekly.target = weeklyTarget;
+  MOCK_CLAN.settings.minJoinLevel = minLv;
+  MOCK_CLAN.settings.recruitment = recruitment;
+  MOCK_CLAN.settings.requireApproval = requireApproval;
+  MOCK_CLAN.settings.region = region;
+  MOCK_CLAN.settings.notes = notes;
+
+  // Log de atividade
+  MOCK_CLAN.activities.unshift({ text: `${PLAYER.name} atualizou as configurações do clã`, when: "agora" });
+
+  // Re-render em áreas afetadas (ex.: overview usa weekly.target)
+  renderOverview(MOCK_CLAN);
+
+  alert("Configurações salvas com sucesso!");
+}
+
 // ===== SHOP =====
 function renderShop(c) {
   $("bal-contrib").textContent = `Contribuição: ${PLAYER.wallet.contributionPoints}`;
@@ -499,7 +574,7 @@ function handleMemberAction(act, id) {
       alert("Você já é o líder.");
       return;
     }
-  
+
     // Caixa de confirmação
     const ok = confirm(
       `Confirmar transferência de liderança?\n\n` +
@@ -507,16 +582,16 @@ function handleMemberAction(act, id) {
       `Após isso, seu papel passará a ser Membro.`
     );
     if (!ok) return;
-  
+
     // 1) Despromove o líder atual na lista (se houver)
     const currentLeader = MOCK_CLAN.members.find(x => x.role === "leader");
     if (currentLeader && currentLeader.id !== m.id) {
       currentLeader.role = "member"; // ou "officer", se preferir
     }
-  
+
     // 2) Promove o alvo
     m.role = "leader";
-  
+
     // 3) Sincroniza o estado local do PLAYER
     if (PLAYER.id === (currentLeader && currentLeader.id)) {
       PLAYER.role = "member";
@@ -524,7 +599,7 @@ function handleMemberAction(act, id) {
     if (PLAYER.id === m.id) {
       PLAYER.role = "leader";
     }
-  
+
     // 4) Feedback e re-render
     alert(`${m.name} agora é o líder do clã.`);
     renderHero(MOCK_CLAN);
@@ -586,12 +661,20 @@ document.addEventListener("DOMContentLoaded", () => {
   $("btn-leave").addEventListener("click", leaveClan);
   $("btn-join").addEventListener("click", joinClan);
 
+  // Botões da aba de configurações
+  const saveBtn = $("btn-settings-save");
+  if (saveBtn) saveBtn.addEventListener("click", saveSettings);
+
+  const cancelBtn = $("btn-settings-cancel");
+  if (cancelBtn) cancelBtn.addEventListener("click", () => renderSettings(MOCK_CLAN));
+
   document.querySelectorAll(".tab").forEach(t => {
     t.addEventListener("click", () => {
       const tab = t.dataset.tab;
       setTab(tab);
       if (tab === "chat" && chatLoadedCount === 0) openChatTab();
       if (tab === "shop") renderShop(MOCK_CLAN);
+      if (tab === "settings") renderSettings(MOCK_CLAN); // <-- aqui
     });
   });
 
@@ -611,6 +694,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const buyBtn = e.target.closest("[data-buy]");
     if (buyBtn) buyItem(buyBtn.getAttribute("data-buy"));
   });
+  
 
   // MOTD
   $("btn-motd-edit").addEventListener("click", () => {
@@ -650,6 +734,8 @@ document.addEventListener("DOMContentLoaded", () => {
   initChatScroll();
 
   renderHero(MOCK_CLAN);
+  setVisible(document.querySelector('.tab[data-tab="settings"]'), (PLAYER.role === "leader" || PLAYER.role === "officer"));
+
   renderOverview(MOCK_CLAN);
   renderMembers(MOCK_CLAN);
   renderMissions(MOCK_CLAN);

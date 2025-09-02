@@ -78,9 +78,7 @@
             <button class="tab" data-tab="shop"><i data-feather="shopping-bag"></i>Loja</button>
             <!-- <button class="tab" data-tab="donations"><i data-feather="heart"></i>Doações</button> -->
             <button class="tab" data-tab="ranking"><i data-feather="award"></i>Ranking</button>
-            <button class="tab" data-tab="settings">
-                <i data-feather="settings"></i>Configurações
-            </button>
+            <button class="tab" data-tab="settings"><i data-feather="settings"></i>Configurações</button>
         </div>
     </section>
 
@@ -138,7 +136,7 @@
                     <p id="weekly-reset" class="text-xs text-gray-400 mt-2"></p>
                     <button id="btn-weekly-claim" class="btn btn-primary w-full mt-3 hidden">
                         <i data-feather="gift"></i><span>Resgatar Recompensa Semanal</span>
-                      </button>
+                    </button>
                 </div>
 
                 <!-- Últimas atividades -->
@@ -238,6 +236,66 @@
                 <p>Ranking indisponível.</p>
             </div>
         </div>
+
+        <!-- Painel: Configurações -->
+        <section id="tab-settings" class="hidden">
+            <h3 class="text-lg font-bold mb-3">Configurações do Clã</h3>
+
+            <div class="grid gap-4 md:grid-cols-2">
+                <!-- Meta Semanal -->
+                <div class="card p-4">
+                    <h4 class="font-semibold mb-2">Meta Semanal (por membro)</h4>
+                    <p class="text-sm text-gray-400 mb-2">
+                        A meta total é <strong>meta × nº de membros</strong>. Afeta o botão de resgate semanal.
+                    </p>
+                    <input id="set-weekly-target" type="number" min="1" class="input" placeholder="Ex.: 5000">
+                </div>
+
+                <!-- Nível mínimo -->
+                <div class="card p-4">
+                    <h4 class="font-semibold mb-2">Nível mínimo de entrada</h4>
+                    <input id="set-min-level" type="number" min="1" class="input" placeholder="Ex.: 10">
+                </div>
+
+                <!-- Recrutamento -->
+                <div class="card p-4">
+                    <h4 class="font-semibold mb-2">Status de recrutamento</h4>
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2">
+                            <input type="radio" name="recruitment" value="open"> Aberto
+                        </label>
+                        <label class="flex items-center gap-2">
+                            <input type="radio" name="recruitment" value="invite"> Apenas por convite
+                        </label>
+                        <label class="flex items-center gap-2">
+                            <input type="radio" name="recruitment" value="closed"> Fechado
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Aprovação e extras -->
+                <div class="card p-4">
+                    <h4 class="font-semibold mb-2">Outros requisitos</h4>
+                    <label class="flex items-center gap-2 mb-2">
+                        <input id="set-require-approval" type="checkbox"> Exigir aprovação manual para entrada
+                    </label>
+                    <label class="block text-sm text-gray-400 mb-1">Região/Servidor (opcional)</label>
+                    <input id="set-region" type="text" class="input" placeholder="Ex.: BR, NA, EU">
+                    <label class="block text-sm text-gray-400 mt-3 mb-1">Observações internas</label>
+                    <textarea id="set-notes" class="textarea" rows="3"
+                        placeholder="Regras, instruções, etc."></textarea>
+                </div>
+            </div>
+
+            <div class="mt-4 flex gap-2">
+                <button id="btn-settings-save" class="btn btn-primary">
+                    <i data-feather="save"></i><span>Salvar</span>
+                </button>
+                <button id="btn-settings-cancel" class="btn btn-ghost">
+                    <i data-feather="x"></i><span>Cancelar</span>
+                </button>
+            </div>
+        </section>
 
     </main>
 
