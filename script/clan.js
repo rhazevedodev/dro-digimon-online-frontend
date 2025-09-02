@@ -114,7 +114,9 @@ function renderHero(c) {
   setVisible($("btn-join"), !PLAYER.inClan);
   setVisible($("btn-leave"), PLAYER.inClan);
   setVisible($("btn-invite"), PLAYER.inClan && (PLAYER.role === "leader" || PLAYER.role === "officer"));
-  setVisible($("btn-donate"), PLAYER.inClan);
+  const donateBtn = $("btn-donate");
+  const hasDonationsTab = !!$("tab-donations");
+  setVisible(donateBtn, PLAYER.inClan && hasDonationsTab);
 
   const leaveBtn = $("btn-leave");
   const hasOtherMembers = c.members.some(m => m.id !== PLAYER.id);
@@ -218,8 +220,11 @@ function renderMembers(c) {
 }
 
 function actionButtonsForMember(m) {
-  const isLeader = PLAYER.role === "leader";
-  const isOfficer = PLAYER.role === "officer";
+  // Descobre meu papel olhando a lista (fonte da UI)
+  const selfMember = MOCK_CLAN.members.find(x => x.id === PLAYER.id);
+  const myRole = selfMember ? selfMember.role : PLAYER.role; // fallback
+  const isLeader = myRole === "leader";
+  const isOfficer = myRole === "officer";
   const isSelf = m.id === PLAYER.id;
 
   if (!PLAYER.inClan) return "";
@@ -293,15 +298,15 @@ function renderMissions(c) {
   if (window.feather) feather.replace();
 }
 
-function renderDonations(c) {
-  const log = $("donations-log");
-  log.innerHTML = "";
-  c.donations.forEach(d => {
-    const li = document.createElement("li");
-    li.textContent = `${d.who}: ${d.what} — ${d.when}`;
-    log.appendChild(li);
-  });
-}
+// function renderDonations(c) {
+//   const log = $("donations-log");
+//   log.innerHTML = "";
+//   c.donations.forEach(d => {
+//     const li = document.createElement("li");
+//     li.textContent = `${d.who}: ${d.what} — ${d.when}`;
+//     log.appendChild(li);
+//   });
+// }
 
 function renderRanking(c) {
   const list = $("ranking-list");
@@ -438,7 +443,7 @@ function buyItem(itemId) {
   MOCK_CLAN.donations.unshift({ who: PLAYER.name, what: `-${cost} Pontos (Loja)`, when: "agora" });
 
   renderShop(MOCK_CLAN);
-  renderDonations(MOCK_CLAN);
+  // renderDonations(MOCK_CLAN);
   alert(`Você comprou: ${it.name}`);
 }
 
@@ -458,7 +463,7 @@ function donate(kind) {
   if (me) me.contribWeek = (me.contribWeek || 0) + points;
 
   renderOverview(MOCK_CLAN);
-  renderDonations(MOCK_CLAN);
+  // renderDonations(MOCK_CLAN);
   alert("Obrigado pela doação!");
 }
 
@@ -486,13 +491,26 @@ function handleMemberAction(act, id) {
   }
 
   if (act === "makeLeader") {
-    if (PLAYER.role !== "leader" || m.id === PLAYER.id) return;
-    const meIdx = MOCK_CLAN.members.findIndex(x => x.id === PLAYER.id);
-    if (meIdx !== -1) {
-      MOCK_CLAN.members[meIdx].role = "member";
+    // não pode dar líder pra si mesmo
+    if (m.id === PLAYER.id) return;
+  
+    // 1) encontre o líder atual na lista e despromova
+    const currentLeader = MOCK_CLAN.members.find(x => x.role === "leader");
+    if (currentLeader && currentLeader.id !== m.id) {
+      currentLeader.role = "member"; // ou "officer", se preferir
     }
-    PLAYER.role = "member";
+  
+    // 2) promova o alvo
     m.role = "leader";
+  
+    // 3) sincronize o estado local do PLAYER conforme a lista
+    if (PLAYER.id === (currentLeader && currentLeader.id)) {
+      PLAYER.role = "member";
+    }
+    if (PLAYER.id === m.id) {
+      PLAYER.role = "leader";
+    }
+  
     alert(`${m.name} agora é o líder do clã.`);
     renderHero(MOCK_CLAN);
     renderMembers(MOCK_CLAN);
@@ -529,9 +547,19 @@ function leaveClan() {
 
 // ===== Tabs =====
 function setTab(tab) {
-  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === tab));
-  ["overview", "members", "missions", "chat", "shop", "donations", "ranking"]
-    .forEach(id => $("tab-" + id).classList.toggle("hidden", tab !== id));
+  // Botões de aba (se existirem)
+  document.querySelectorAll(".tab").forEach(btn => {
+    if (!btn) return;
+    const isActive = btn.dataset && btn.dataset.tab === tab;
+    btn.classList.toggle("active", !!isActive);
+  });
+
+  // Painéis: pega tudo que começar com id="tab-" (não precisa lista fixa)
+  document.querySelectorAll('[id^="tab-"]').forEach(panel => {
+    if (!panel) return;
+    const id = panel.id.replace(/^tab-/, "");
+    panel.classList.toggle("hidden", id !== tab);
+  });
 }
 
 // ===== Wire =====
@@ -539,7 +567,7 @@ document.addEventListener("DOMContentLoaded", () => {
   seedChatHistory();
   $("btn-back").addEventListener("click", () => window.location.href = "home.html");
   $("btn-invite").addEventListener("click", () => alert("Convite enviado (simulação)."));
-  $("btn-donate").addEventListener("click", () => setTab("donations"));
+  // $("btn-donate").addEventListener("click", () => setTab("donations"));
   $("btn-leave").addEventListener("click", leaveClan);
   $("btn-join").addEventListener("click", joinClan);
 
@@ -610,7 +638,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderOverview(MOCK_CLAN);
   renderMembers(MOCK_CLAN);
   renderMissions(MOCK_CLAN);
-  renderDonations(MOCK_CLAN);
+  // renderDonations(MOCK_CLAN);
   renderRanking(MOCK_CLAN);
   if (window.feather) feather.replace();
 });
