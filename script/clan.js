@@ -491,19 +491,33 @@ function handleMemberAction(act, id) {
   }
 
   if (act === "makeLeader") {
-    // não pode dar líder pra si mesmo
-    if (m.id === PLAYER.id) return;
+    if (PLAYER.role !== "leader") {
+      alert("Apenas o líder atual pode transferir a liderança.");
+      return;
+    }
+    if (m.id === PLAYER.id) {
+      alert("Você já é o líder.");
+      return;
+    }
   
-    // 1) encontre o líder atual na lista e despromova
+    // Caixa de confirmação
+    const ok = confirm(
+      `Confirmar transferência de liderança?\n\n` +
+      `Você está prestes a tornar ${m.name} o novo Líder do clã.\n` +
+      `Após isso, seu papel passará a ser Membro.`
+    );
+    if (!ok) return;
+  
+    // 1) Despromove o líder atual na lista (se houver)
     const currentLeader = MOCK_CLAN.members.find(x => x.role === "leader");
     if (currentLeader && currentLeader.id !== m.id) {
       currentLeader.role = "member"; // ou "officer", se preferir
     }
   
-    // 2) promova o alvo
+    // 2) Promove o alvo
     m.role = "leader";
   
-    // 3) sincronize o estado local do PLAYER conforme a lista
+    // 3) Sincroniza o estado local do PLAYER
     if (PLAYER.id === (currentLeader && currentLeader.id)) {
       PLAYER.role = "member";
     }
@@ -511,6 +525,7 @@ function handleMemberAction(act, id) {
       PLAYER.role = "leader";
     }
   
+    // 4) Feedback e re-render
     alert(`${m.name} agora é o líder do clã.`);
     renderHero(MOCK_CLAN);
     renderMembers(MOCK_CLAN);
