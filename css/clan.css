@@ -212,10 +212,10 @@
   border-right: none;
 }
 
-.tab.active {
-  background: #111827;
-  color: #93c5fd;
-}
+.tab.active { background-color: rgba(255,255,255,0.06); }
+
+#tabs .tab { white-space: nowrap; }   /* evita quebrar em 2 linhas */
+
 
 /* Member card */
 .member-card {
