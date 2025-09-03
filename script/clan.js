@@ -53,6 +53,10 @@ const MOCK_CLAN = {
     region: "BR",              // opcional: região/servidor
     notes: ""                  // observações internas do clã
   },
+  joinRequests: [
+    { id: "rq1", name: "Kari", level: 12, avatar: "./images/digimons/rookies/patamon.jpg", note: "Quero jogar com amigos 😄", when: "há 10m" },
+    { id: "rq2", name: "TK", level: 8, avatar: "./images/digimons/rookies/gomamon.jpg", note: "Sou ativo todo dia", when: "há 1h" }
+  ],
 };
 
 // ===== Estado do jogador =====
@@ -158,6 +162,146 @@ function renderHero(c) {
     btnDonate.classList.toggle("hidden", !canDonate);
     btnDonate.disabled = !canDonate;
   }
+
+  // Exibir aba "Pedidos" apenas para líder/oficial e quando fizer sentido
+  const requestsTabBtn = $("tabbtn-requests");
+  const shouldShowRequests =
+    (PLAYER.inClan) &&
+    ((PLAYER.role === "leader" || PLAYER.role === "officer")) &&
+    ((c.settings?.recruitment === "invite") || (c.settings?.requireApproval === true));
+
+  if (requestsTabBtn) {
+    requestsTabBtn.classList.toggle("hidden", !shouldShowRequests);
+    // badge com contagem
+    const badge = $("badge-requests");
+    if (badge) {
+      const n = (c.joinRequests || []).length;
+      badge.textContent = String(n);
+      badge.classList.toggle("hidden", n === 0);
+    }
+  }
+}
+
+function renderRequests(c) {
+  const list = $("requests-list");
+  const empty = $("requests-empty");
+  if (!list || !empty) return;
+
+  const items = c.joinRequests || [];
+  list.innerHTML = "";
+
+  if (!items.length) {
+    empty.classList.remove("hidden");
+  } else {
+    empty.classList.add("hidden");
+  }
+
+  items.forEach(req => {
+    const card = document.createElement("div");
+    card.className = "request-card flex flex-col sm:flex-row sm:items-center items-stretch gap-3 p-3 rounded bg-gray-800";
+
+    card.innerHTML = `
+    <div class="flex items-center gap-3">
+      <img src="${req.avatar}" alt="${req.name}" class="w-12 h-12 rounded object-cover flex-shrink-0">
+      <div class="min-w-0">
+        <p class="font-semibold truncate">${req.name} <span class="text-xs text-gray-300">nível ${req.level}</span></p>
+        <p class="text-sm text-gray-400 truncate">${req.note || ""}</p>
+        <p class="text-xs text-gray-500">${req.when || "-"}</p>
+      </div>
+    </div>
+  
+    <div class="actions grid grid-cols-2 sm:flex sm:flex-row gap-2 w-full sm:w-auto mt-2 sm:mt-0 sm:ml-auto">
+      <button class="btn btn-ghost w-full sm:w-auto" data-profile="${req.id}">
+        <i data-feather="user"></i><span>Perfil</span>
+      </button>
+      <button class="btn btn-primary w-full sm:w-auto" data-approve="${req.id}">
+        <i data-feather="check"></i><span>Aprovar</span>
+      </button>
+      <button class="btn btn-danger col-span-2 sm:col-span-1 w-full sm:w-auto" data-deny="${req.id}">
+        <i data-feather="x"></i><span>Negar</span>
+      </button>
+    </div>
+  `;
+    list.appendChild(card);
+  });
+
+  // Atualiza badge no botão da aba
+  const badge = $("badge-requests");
+  if (badge) {
+    const n = items.length;
+    badge.textContent = String(n);
+    badge.classList.toggle("hidden", n === 0);
+  }
+
+  if (window.feather) feather.replace();
+}
+
+function approveRequest(reqId) {
+  // Somente líder ou oficial
+  const myMember = MOCK_CLAN.members.find(x => x.id === PLAYER.id);
+  const myRole = myMember ? myMember.role : PLAYER.role;
+  if (!(PLAYER.inClan && (myRole === "leader" || myRole === "officer"))) {
+    alert("Apenas Líder ou Oficial podem aprovar pedidos.");
+    return;
+  }
+
+  const idx = (MOCK_CLAN.joinRequests || []).findIndex(r => r.id === reqId);
+  if (idx === -1) return;
+
+  const req = MOCK_CLAN.joinRequests[idx];
+
+  // Regras: nível mínimo e capacidade
+  const minLv = MOCK_CLAN.settings?.minJoinLevel ?? 1;
+  if (req.level < minLv) {
+    alert(`Nível mínimo para entrar é ${minLv}.`);
+    return;
+  }
+  if (MOCK_CLAN.members.length >= MOCK_CLAN.capacity) {
+    alert("Capacidade do clã atingida. Aumente a capacidade ou remova membros.");
+    return;
+  }
+
+  // Aprova: entra como membro
+  MOCK_CLAN.members.push({
+    id: `m_${Date.now()}`, // id fake de mock
+    name: req.name,
+    role: "member",
+    level: req.level,
+    avatar: req.avatar,
+    online: false,
+    contribWeek: 0
+  });
+
+  // Remove da fila
+  MOCK_CLAN.joinRequests.splice(idx, 1);
+
+  // Log de atividade
+  MOCK_CLAN.activities.unshift({ text: `${req.name} entrou no clã (aprovado)`, when: "agora" });
+
+  // Re-render
+  renderHero(MOCK_CLAN);
+  renderMembers(MOCK_CLAN);
+  renderRequests(MOCK_CLAN);
+  alert(`${req.name} foi aprovado(a).`);
+}
+
+function denyRequest(reqId) {
+  const myMember = MOCK_CLAN.members.find(x => x.id === PLAYER.id);
+  const myRole = myMember ? myMember.role : PLAYER.role;
+  if (!(PLAYER.inClan && (myRole === "leader" || myRole === "officer"))) {
+    alert("Apenas Líder ou Oficial podem negar pedidos.");
+    return;
+  }
+
+  const idx = (MOCK_CLAN.joinRequests || []).findIndex(r => r.id === reqId);
+  if (idx === -1) return;
+
+  const req = MOCK_CLAN.joinRequests[idx];
+  MOCK_CLAN.joinRequests.splice(idx, 1);
+  MOCK_CLAN.activities.unshift({ text: `Pedido de ${req.name} foi negado`, when: "agora" });
+
+  renderRequests(MOCK_CLAN);
+  renderOverview(MOCK_CLAN);
 }
 
 function renderOverview(c) {
@@ -702,6 +846,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (tab === "chat" && chatLoadedCount === 0) openChatTab();
       if (tab === "shop") renderShop(MOCK_CLAN);
       if (tab === "settings") renderSettings(MOCK_CLAN); // <-- aqui
+      if (tab === "requests") renderRequests(MOCK_CLAN);
+
     });
   });
 
@@ -720,6 +866,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const buyBtn = e.target.closest("[data-buy]");
     if (buyBtn) buyItem(buyBtn.getAttribute("data-buy"));
+
+    const approveBtn = e.target.closest("[data-approve]");
+    if (approveBtn) {
+      approveRequest(approveBtn.getAttribute("data-approve"));
+    }
+
+    const denyBtn = e.target.closest("[data-deny]");
+    if (denyBtn) {
+      denyRequest(denyBtn.getAttribute("data-deny"));
+    }
   });
 
 

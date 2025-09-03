@@ -79,6 +79,11 @@
             <!-- <button class="tab" data-tab="donations"><i data-feather="heart"></i>Doações</button> -->
             <button class="tab" data-tab="ranking"><i data-feather="award"></i>Ranking</button>
             <button class="tab" data-tab="settings"><i data-feather="settings"></i>Configurações</button>
+            <button class="tab" data-tab="requests" id="tabbtn-requests">
+                <i data-feather="inbox"></i>
+                <span>Pedidos</span>
+                <span id="badge-requests" class="ml-2 rounded-full px-2 py-0.5 text-xs bg-yellow-600 hidden">0</span>
+              </button>
         </div>
     </section>
 
@@ -236,6 +241,17 @@
                 <p>Ranking indisponível.</p>
             </div>
         </div>
+
+        <!-- Pedidos de Entrada -->
+        <section id="tab-requests" class="hidden">
+            <h3 class="text-lg font-bold mb-3">Pedidos de Entrada</h3>
+          
+            <div id="requests-empty" class="text-gray-400 hidden">
+              Nenhum pedido pendente.
+            </div>
+          
+            <div id="requests-list" class="space-y-3"></div>
+          </section>
 
         <!-- Painel: Configurações -->
         <section id="tab-settings" class="hidden">
