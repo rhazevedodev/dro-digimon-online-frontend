@@ -31,9 +31,9 @@ const MOCK_CLAN = {
     { who: "Agus", what: "+5 Cristais", when: "há 1d" },
   ],
   missions: [
-    { id: "m1", title: "Coletar Dados Beta", desc: "Coletar 200 Dados Beta em áreas 2-3.", progress: { current: 120, total: 200 }, reward: "Cofre do Clã x1" },
-    { id: "m2", title: "Vencer 10 Batalhas", desc: "Qualquer modo PVP.", progress: { current: 6, total: 10 }, reward: "Tickets x5" },
-    { id: "m3", title: "Doações Semanais", desc: "Atingir 5.000 pontos de contribuição.", progress: { current: 1450, total: 5000 }, reward: "Buff +5% XP (48h)" },
+    { id: "m1", title: "Coletar Dados Beta", desc: "Coletar 200 Dados Beta em áreas 2-3.", progress: { current: 300, total: 200 }, reward: { contrib: 300 } },
+    { id: "m2", title: "Vencer 10 Batalhas", desc: "Qualquer modo PVP.", progress: { current: 6, total: 10 }, reward: { contrib: 500 } },
+    { id: "m3", title: "Doações Semanais", desc: "Atingir 5.000 pontos de contribuição.", progress: { current: 1450, total: 5000 }, reward: { contrib: 1000 } },
   ],
   ranking: [
     { pos: 1, name: "Digital Tamers", score: 12540 },
@@ -456,21 +456,57 @@ function renderMissions(c) {
   setVisible(empty, false);
 
   c.missions.forEach(ms => {
+    const reached = (ms.progress?.current ?? 0) >= (ms.progress?.total ?? 0);
+    const isCompleted = !!ms.completed;
+
+    // Label/ícone
+    const btnLabel = isCompleted ? "Concluída" : "Finalizar";
+    const btnIcon = isCompleted ? "check" : "flag";
+
+    // Classes: concluída (verde, disabled) | pronta p/ finalizar (primária) | em progresso (disabled)
+    const baseBtn = "btn w-full mt-3";
+    const clsDone = "opacity-80 cursor-not-allowed bg-green-600 hover:bg-green-600 border-green-600";
+    const clsReady = "btn-primary";
+    const clsWip = "opacity-50 cursor-not-allowed";
+
+    let btnClass = baseBtn;
+    let btnDisabledAttr = "";
+
+    if (isCompleted) {
+      btnClass += " " + clsDone;
+      btnDisabledAttr = "disabled";
+    } else if (reached) {
+      btnClass += " " + clsReady;
+      // habilitado para clicar
+    } else {
+      btnClass += " " + clsWip;
+      btnDisabledAttr = "disabled";
+    }
+
     const p = pct(ms.progress);
     const el = document.createElement("div");
     el.className = "mission";
     el.innerHTML = `
-      <p class="title">${ms.title}</p>
-      <p class="meta">${ms.desc}</p>
-      <div class="progress">
-        <div class="progress-fill" style="width:${p}%"></div>
-        <div class="progress-text">${ms.progress.current}/${ms.progress.total} (${p}%)</div>
-      </div>
-      <div class="flex items-center justify-between mt-1">
-        <p class="meta">Recompensa: <span class="font-bold text-yellow-300">${ms.reward}</span></p>
-        <button class="btn btn-primary" data-mission="${ms.id}"><i data-feather="check-circle"></i><span>Contribuir</span></button>
-      </div>
-    `;
+  <p class="title">${ms.title}</p>
+  <p class="meta">${ms.desc}</p>
+
+  <div class="progress mt-2">
+    <div class="progress-fill" style="width:${p}%"></div>
+    <div class="progress-text">${ms.progress.current}/${ms.progress.total} (${p}%)</div>
+  </div>
+
+  <div class="mt-3">
+    <p class="meta">Recompensa:
+      <span class="font-bold text-yellow-300">
+        ${ms.reward?.contrib || 0} Pontos de Contribuição
+      </span>
+    </p>
+
+    <button class="${btnClass}" data-mission="${ms.id}" ${btnDisabledAttr}>
+      <i data-feather="${btnIcon}"></i><span>${btnLabel}</span>
+    </button>
+  </div>
+`;
     list.appendChild(el);
   });
   if (window.feather) feather.replace();
@@ -859,8 +895,39 @@ document.addEventListener("DOMContentLoaded", () => {
     if (d) donate(d.getAttribute("data-donate"));
 
     const missionBtn = e.target.closest("[data-mission]");
-    if (missionBtn) alert(`Contribuição enviada para ${missionBtn.getAttribute("data-mission")}`);
+    if (missionBtn) {
+      const id = missionBtn.getAttribute("data-mission");
+      const ms = MOCK_CLAN.missions.find(m => m.id === id);
+      if (!ms) return;
 
+      // Se já marcou como concluída antes, não faz nada
+      if (ms.completed) return;
+
+      // Permite finalizar só quando objetivo foi atingido
+      if ((ms.progress?.current ?? 0) < (ms.progress?.total ?? 0)) {
+        alert("A missão ainda não está concluída.");
+        return;
+      }
+
+      // Marca como concluída AGORA (apenas no clique)
+      ms.completed = true;
+
+      // (Opcional) recompensa
+      const pts = ms.reward?.contrib || 0;
+      if (pts > 0) {
+        PLAYER.wallet.contributionPoints += pts;
+        MOCK_CLAN.activities.unshift({
+          text: `${PLAYER.name} finalizou "${ms.title}" (+${pts} Pontos de Contribuição)`,
+          when: "agora"
+        });
+      } else {
+        MOCK_CLAN.activities.unshift({ text: `${PLAYER.name} finalizou "${ms.title}"`, when: "agora" });
+      }
+
+      renderMissions(MOCK_CLAN);
+      // renderShop(MOCK_CLAN); // se quiser atualizar saldo visível
+      alert("Missão concluída!");
+    }
     const memberBtn = e.target.closest("[data-act]");
     if (memberBtn) handleMemberAction(memberBtn.getAttribute("data-act"), memberBtn.getAttribute("data-id"));
 
