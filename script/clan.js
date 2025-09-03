@@ -1,4 +1,5 @@
 // ===== Mock de backend =====
+
 const MOCK_CLAN = {
   id: "CLN-001",
   name: "Digital Tamers",
@@ -6,7 +7,8 @@ const MOCK_CLAN = {
   emblem: "./images/emblems/emblem1.png",
   description: "Um clã focado em coop, raids e evolução. Respeito acima de tudo!",
   motd: "Bem-vindos! Raid no sábado 20h. Não faltem!",
-  level: 7,
+  level: 10,
+  maxLevel: 10,
   xp: { current: 14250, total: 20000 },
   members: [
     { id: "u1", name: "Rafael", role: "leader", level: 32, avatar: "./images/digimons/rookies/renamon.jpg", online: true, contribWeek: 850 },
@@ -69,6 +71,52 @@ let PLAYER = {
     contributionPoints: 1800
   }
 };
+
+// Missões pré-definidas por nível (exemplo até nível 10)
+const MISSION_CATALOG = [
+  { id: "mL1", reqLevel: 1, title: "Boas-vindas ao Clã", desc: "Apresente-se no chat do clã.", progress: { current: 0, total: 1 }, reward: { contrib: 100 } },
+  { id: "mL2", reqLevel: 2, title: "Coleta Inicial", desc: "Coletar 50 Dados Beta.", progress: { current: 0, total: 50 }, reward: { contrib: 150 } },
+  { id: "mL3", reqLevel: 3, title: "Treino em Equipe", desc: "Vencer 5 batalhas em grupo.", progress: { current: 0, total: 5 }, reward: { contrib: 250 } },
+  { id: "mL4", reqLevel: 4, title: "Sentinela das Raids", desc: "Participar de 1 raid semanal.", progress: { current: 0, total: 1 }, reward: { contrib: 350 } },
+  { id: "mL5", reqLevel: 5, title: "Expansão do Clã", desc: "Convidar 2 novos membros (aprovados).", progress: { current: 0, total: 2 }, reward: { contrib: 500 } },
+  { id: "mL6", reqLevel: 6, title: "Aprimorar Estratégias", desc: "Compartilhar 3 dicas úteis no chat.", progress: { current: 0, total: 3 }, reward: { contrib: 300 } },
+  { id: "mL7", reqLevel: 7, title: "Forja de Recursos", desc: "Doar 2.000 pontos de contribuição ao total.", progress: { current: 0, total: 2000 }, reward: { contrib: 700 } },
+  { id: "mL8", reqLevel: 8, title: "Coordenação Avançada", desc: "Completar 3 missões épicas em grupo.", progress: { current: 0, total: 3 }, reward: { contrib: 900 } },
+  { id: "mL9", reqLevel: 9, title: "Domínio de Campo", desc: "Vencer 10 partidas PVP como clã.", progress: { current: 0, total: 10 }, reward: { contrib: 1200 } },
+  { id: "mL10", reqLevel: 10, title: "Elite do Servidor", desc: "Ficar no Top 3 do ranking semanal.", progress: { current: 0, total: 1 }, reward: { contrib: 1500 } },
+];
+
+function syncMissionsFromCatalog(c) {
+  if (!Array.isArray(c.missions)) c.missions = [];
+
+  // Apenas missões liberadas (reqLevel <= nível atual)
+  const allowed = MISSION_CATALOG.filter(m => (m.reqLevel ?? 1) <= (c.level ?? 1));
+  const prev = new Map(c.missions.map(m => [m.id, m]));
+
+  const next = allowed.map(src => {
+    const old = prev.get(src.id);
+    return {
+      id: src.id,
+      reqLevel: src.reqLevel,
+      title: src.title,
+      desc: src.desc,
+      reward: { ...(src.reward || {}) },
+      progress: old?.progress ? { ...old.progress } : { ...src.progress },
+      completed: !!old?.completed
+    };
+  });
+
+  // Ordena: não concluídas primeiro, depois por reqLevel e título
+  next.sort((a, b) => {
+    const ac = a.completed ? 1 : 0, bc = b.completed ? 1 : 0;
+    if (ac !== bc) return ac - bc;
+    const ar = a.reqLevel ?? 1, br = b.reqLevel ?? 1;
+    if (ar !== br) return ar - br;
+    return a.title.localeCompare(b.title);
+  });
+
+  c.missions = next;
+}
 
 // ===== Helpers =====
 function $(id) { return document.getElementById(id); }
@@ -818,6 +866,15 @@ function handleMemberAction(act, id) {
   renderMembers(MOCK_CLAN);
 }
 
+function setClanLevel(newLevel) {
+  const maxL = MOCK_CLAN.maxLevel || newLevel;
+  MOCK_CLAN.level = Math.max(1, Math.min(maxL, newLevel));
+  syncMissionsFromCatalog(MOCK_CLAN);
+  renderOverview(MOCK_CLAN);
+  renderMissions(MOCK_CLAN);
+  renderHero(MOCK_CLAN);
+}
+
 function joinClan() {
   if (PLAYER.inClan) return;
   PLAYER.inClan = true;
@@ -988,6 +1045,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderOverview(MOCK_CLAN);
   renderMembers(MOCK_CLAN);
+  syncMissionsFromCatalog(MOCK_CLAN);
   renderMissions(MOCK_CLAN);
   // renderDonations(MOCK_CLAN);
   renderRanking(MOCK_CLAN);
