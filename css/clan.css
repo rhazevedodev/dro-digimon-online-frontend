@@ -428,6 +428,10 @@
   resize: vertical;     /* só deixa redimensionar pra cima/baixo */
 }
 
+#clan-hero.hidden + #tabs-container {
+  margin-top: 1rem; /* só aplica nas tabs */
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .clan-hero {

@@ -92,7 +92,7 @@ const MOCK_CLAN = {
 let PLAYER = {
   id: "u_player",
   name: "Você",
-  inClan: false,
+  inClan: true,
   role: "leader",
   wallet: { contributionPoints: 1800 }
 };
