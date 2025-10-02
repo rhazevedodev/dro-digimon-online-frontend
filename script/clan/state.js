@@ -28,6 +28,7 @@ export const SHOP_CATALOG = [
   {id:"s_skin_emblema",name:"Emblema Dourado (cosmético)",img:"./images/items/emblem_gold.png",desc:"Cosmético para o clã.",price:{contrib:2500},type:"clan-cosmetic",minClanLevel:6,minShopLevel:3,stock:{seasonal:5},perClan:{seasonal:1}}
 ];
 
+
 export const MOCK_CLAN = {
   id:"CLN-001",name:"Digital Tamers",tag:"#DTM",emblem:"./images/emblems/emblem1.png",
   description:"Um clã focado em coop, raids e evolução. Respeito acima de tudo!", motd:"Bem-vindos! Raid no sábado 20h. Não faltem!",

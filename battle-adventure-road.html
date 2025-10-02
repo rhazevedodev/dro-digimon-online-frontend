@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Batalha - Adventure Road</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="./script/battle-adventure-road.js" defer></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <style>
+    /* Animação de tremor */
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-5px); }
+      40% { transform: translateX(5px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
+      100% { transform: translateX(0); }
+    }
+    .shake {
+      animation: shake 0.4s ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+
+  <!-- HEADER -->
+  <header class="flex items-center justify-between p-4 bg-gray-800 shadow-md">
+    <button id="btn-back" class="flex items-center gap-2 hover:opacity-90">
+      ← Rotas
+    </button>
+    <h1 class="text-xl font-bold">Batalha - Adventure Road</h1>
+    <span class="opacity-0">←</span>
+  </header>
+
+  <!-- CONTEÚDO -->
+  <main class="flex-1 flex flex-col items-center justify-center p-6 text-center">
+
+    <!-- CONTADOR DE INIMIGOS -->
+    <div id="enemy-counter" 
+         class="mb-6 flex items-center justify-center gap-2 bg-gray-800 border border-yellow-500 px-6 py-3 rounded-lg shadow-lg font-semibold text-yellow-400 hidden">
+      <i data-feather="target"></i>
+      <span id="enemy-counter-text">Inimigos derrotados: 0 / 0</span>
+    </div>
+
+    <!-- CARD PRINCIPAL DO DIGIMON -->
+    <div id="digimon-card" 
+         class="bg-gray-800 border border-gray-600 rounded-2xl shadow-lg p-6 w-full max-w-md hidden opacity-0 transform translate-y-6 transition-all duration-500">
+      
+      <!-- Imagem do Digimon -->
+      <img id="digimon-img" class="w-40 h-40 object-contain mx-auto mb-4" alt="Digimon">
+
+      <!-- Nome e nível -->
+      <h2 id="digimon-name" class="text-2xl font-bold mb-2"></h2>
+      <p id="digimon-level" class="text-lg text-gray-300 mb-6"></p>
+
+      <!-- HUD de HP -->
+      <div id="hud-hp" class="mb-6">
+        <div class="flex justify-between mb-1 text-sm">
+          <span>HP</span>
+          <span id="hud-hp-text">0 / 0</span>
+        </div>
+        <div class="w-full bg-gray-700 rounded-full h-5">
+          <div id="hud-hp-bar" class="bg-green-500 h-5 rounded-full text-xs flex items-center justify-center transition-all duration-300" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Atributos ATK, DEF, SPD -->
+      <div id="digimon-attributes" class="grid grid-cols-3 gap-4 w-full">
+        <div class="bg-gray-900 p-4 rounded-xl shadow-md flex flex-col items-center">
+          <i data-feather="crosshair" class="text-yellow-400 mb-1"></i>
+          <h3 class="text-yellow-400 font-bold">ATK</h3>
+          <p id="attr-atk" class="text-xl"></p>
+        </div>
+        <div class="bg-gray-900 p-4 rounded-xl shadow-md flex flex-col items-center">
+          <i data-feather="shield" class="text-blue-400 mb-1"></i>
+          <h3 class="text-blue-400 font-bold">DEF</h3>
+          <p id="attr-def" class="text-xl"></p>
+        </div>
+        <div class="bg-gray-900 p-4 rounded-xl shadow-md flex flex-col items-center">
+          <i data-feather="zap" class="text-purple-400 mb-1"></i>
+          <h3 class="text-purple-400 font-bold">SPD</h3>
+          <p id="attr-spd" class="text-xl"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD DE COMANDOS -->
+    <div id="battle-actions" 
+         class="bg-gray-800 border border-gray-600 rounded-2xl shadow-lg p-6 w-full max-w-md mt-6 hidden">
+      <h3 class="text-lg font-bold mb-4">Ações</h3>
+      <div class="flex flex-col gap-3">
+        <button id="btn-attack" class="w-full bg-red-600 hover:bg-red-500 text-white py-2 rounded-lg font-semibold transition">⚔️ Atacar</button>
+        <button id="btn-defend" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-lg font-semibold transition">🛡️ Defender</button>
+        <button id="btn-run" class="w-full bg-gray-600 hover:bg-gray-500 text-white py-2 rounded-lg font-semibold transition">🏃 Fugir</button>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    feather.replace();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adventure Road</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="./script/adventure-road.js" defer></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+
+  <!-- HEADER -->
+  <header class="flex items-center justify-between p-4 bg-gray-800 shadow-md">
+    <button id="btn-back" class="flex items-center gap-2 hover:opacity-90">
+      ← Voltar
+    </button>
+    <h1 class="text-xl font-bold">Adventure Road</h1>
+    <span class="opacity-0">←</span>
+  </header>
+
+  <!-- Banner de nova rota -->
+  <div id="unlock-banner" 
+       class="hidden fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg flex items-center gap-3 z-50">
+    <span id="unlock-banner-text">✨ Nova Rota Desbloqueada!</span>
+    <button id="close-banner" class="ml-2 text-white hover:text-gray-200">❌</button>
+  </div>
+
+  <!-- Caminho de rotas -->
+  <main class="flex justify-center p-6">
+    <div class="relative w-80">
+      <!-- Linha central -->
+      <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-1 bg-gray-700 h-full"></div>
+
+      <!-- Rotas -->
+      <div id="routes-path" class="flex flex-col gap-16 relative z-10"></div>
+    </div>
+  </main>
+
+</body>
+</html>

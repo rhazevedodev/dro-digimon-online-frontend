@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jornada - Digimon Revolution</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="./script/jornada.js" defer></script>
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+
+  <!-- HEADER -->
+  <header class="flex items-center justify-between p-4 bg-gray-800 shadow-md">
+    <button id="btn-back" class="flex items-center gap-2 hover:opacity-90">
+      ← Voltar
+    </button>
+    <h1 class="text-xl font-bold">Jornada</h1>
+    <span class="opacity-0">←</span>
+  </header>
+
+  <!-- CONTEÚDO -->
+  <main class="flex-1 p-6 max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+    <!-- Card Adventure Road -->
+    <div data-mode="adventure-road"
+      class="bg-gray-800 p-6 rounded-2xl shadow-lg hover:scale-105 transition cursor-pointer">
+      <h2 class="text-lg font-bold mb-2">Adventure Road</h2>
+      <p class="text-gray-400 text-sm">Avance por rotas sequenciais, enfrente Digimons aleatórios e bosses para liberar
+        novas rotas.</p>
+    </div>
+
+    <!-- Card Torre Digital -->
+    <div class="bg-gray-800 p-6 rounded-2xl shadow-lg hover:scale-105 transition cursor-pointer">
+      <h2 class="text-lg font-bold mb-2">Torre Digital</h2>
+      <p class="text-gray-400 text-sm">Suba infinitos andares, cada vez mais difíceis, até onde conseguir.</p>
+    </div>
+
+    <!-- Card Desafios Diários -->
+    <div class="bg-gray-800 p-6 rounded-2xl shadow-lg hover:scale-105 transition cursor-pointer">
+      <h2 class="text-lg font-bold mb-2">Desafios Diários</h2>
+      <p class="text-gray-400 text-sm">Complete missões rotativas e ganhe recompensas extras todos os dias.</p>
+    </div>
+
+    <!-- Card Arena Fantasma -->
+    <div class="bg-gray-800 p-6 rounded-2xl shadow-lg hover:scale-105 transition cursor-pointer">
+      <h2 class="text-lg font-bold mb-2">Arena Fantasma</h2>
+      <p class="text-gray-400 text-sm">Enfrente times aleatórios e use sua melhor estratégia de Digimons.</p>
+    </div>
+
+    <!-- Card Expedições -->
+    <div class="bg-gray-800 p-6 rounded-2xl shadow-lg hover:scale-105 transition cursor-pointer">
+      <h2 class="text-lg font-bold mb-2">Expedições</h2>
+      <p class="text-gray-400 text-sm">Envie Digimons em missões de horas para trazer recompensas passivas.</p>
+    </div>
+
+  </main>
+</body>
+
+</html>
