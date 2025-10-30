@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expedições</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="./script/expeditions.js" defer></script>
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+
+  <!-- HEADER -->
+  <header class="flex items-center justify-between p-4 bg-gray-800 shadow-md">
+    <button id="btn-back" class="flex items-center gap-2 hover:opacity-90">
+      ← Voltar
+    </button>
+    <h1 class="text-xl font-bold">Expedições</h1>
+    <span class="opacity-0">←</span>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="flex flex-col items-center gap-6 p-6 text-white">
+    <p class="text-gray-300 max-w-md text-center">
+      Envie seus Digimons em expedições e receba recompensas ao final.
+      Cada missão pode ser feita em diferentes dificuldades.
+    </p>
+
+    <div id="expeditions-list" class="grid gap-6 w-full max-w-md"></div>
+  </main>
+
+  <!-- MODAL DE DIFICULDADE -->
+  <div id="difficulty-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50">
+    <div class="bg-gray-800 p-6 rounded-xl w-96 text-center border border-gray-700 shadow-2xl">
+      <h2 class="text-xl font-bold mb-4">Escolha a Dificuldade</h2>
+      <div id="difficulty-list" class="flex flex-col gap-3 text-white"></div>
+      <button id="cancel-difficulty"
+        class="mt-5 w-full bg-red-600 hover:bg-red-500 py-2 rounded-lg font-semibold transition">
+        Cancelar
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL DE RECOMPENSA -->
+  <div id="reward-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50">
+    <div class="bg-gray-800 p-6 rounded-xl w-80 text-center border border-gray-700 shadow-2xl">
+      <h2 id="reward-title" class="text-xl font-bold mb-3 text-green-400">Recompensa Recebida!</h2>
+      <p id="reward-expedition-name" class="text-sm text-gray-300 mb-3"></p>
+      <ul id="reward-list" class="text-left text-gray-200 mb-4 list-disc list-inside"></ul>
+      <button id="close-reward-modal" class="bg-blue-600 hover:bg-blue-500 w-full py-2 rounded-lg font-semibold">
+        OK
+      </button>
+    </div>
+  </div>
+
+</body>
+
+</html>

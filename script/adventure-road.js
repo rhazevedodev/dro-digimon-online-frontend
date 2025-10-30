@@ -1,4 +1,3 @@
-// Mock inicial de rotas
 const ROUTES = [
   { id: 1, name: "Rota 1", enemies: 3, unlocked: true, boss: "Greymon" },
   { id: 2, name: "Rota 2", enemies: 4, unlocked: false, boss: "Kabuterimon" },
@@ -10,45 +9,31 @@ const ROUTES = [
   { id: 8, name: "Rota 8", enemies: 10, unlocked: false, boss: "Piedmon" }
 ];
 
-// Carregar progresso salvo do localStorage
-function loadProgress() {
-  const data = localStorage.getItem("adventureRoutes");
-  if (data) {
-    const saved = JSON.parse(data);
-    saved.forEach((r, i) => {
-      if (ROUTES[i]) ROUTES[i].unlocked = r.unlocked;
-    });
+// === FUNÇÕES EXISTENTES ===
+function ensureDefaultProgress() {
+  if (!localStorage.getItem("adventureRoutes")) {
+    localStorage.setItem("adventureRoutes", JSON.stringify(ROUTES));
   }
 }
 
-// Renderizar rotas em zig-zag
-function renderRoutes() {
-  const container = document.getElementById("routes-path");
-  container.innerHTML = "";
+function loadProgress() {
+  ensureDefaultProgress();
 
-  ROUTES.filter(route => route.unlocked).forEach((route, index) => {
-    const side = index % 2 === 0 ? "self-start pr-12 text-left" : "self-end pl-12 text-right";
-
-    const card = document.createElement("div");
-    card.className = `relative w-1/2 ${side}`;
-
-    card.innerHTML = `
-      <div class="bg-gray-800 border border-gray-600 rounded-xl p-4 shadow-md cursor-pointer hover:bg-gray-700 transition">
-        <h2 class="font-bold">${route.name}</h2>
-        <p class="text-sm text-gray-400">Inimigos: ${route.enemies}</p>
-        <p class="text-sm text-red-400">Boss: ???</p>
-      </div>
-    `;
-
-    card.querySelector("div").onclick = () => {
-      window.location.href = `battle-adventure-road.html?routeId=${route.id}`;
-    };
-
-    container.appendChild(card);
-  });
+  const data = localStorage.getItem("adventureRoutes");
+  if (data) {
+    try {
+      const saved = JSON.parse(data);
+      ROUTES.forEach((r, i) => {
+        if (saved[i]) r.unlocked = !!saved[i].unlocked;
+      });
+    } catch {
+      console.warn("Erro ao carregar progresso. Resetando...");
+      localStorage.removeItem("adventureRoutes");
+      localStorage.setItem("adventureRoutes", JSON.stringify(ROUTES));
+    }
+  }
 }
 
-// Mostrar banner se desbloqueou rota nova
 function showUnlockBanner() {
   const lastUnlocked = localStorage.getItem("lastUnlockedRoute");
   if (lastUnlocked) {
@@ -71,13 +56,74 @@ function showUnlockBanner() {
   }
 }
 
+function renderLatestUnlockedRoute() {
+  const routeCard = document.getElementById("route-card");
+  const noRoutes = document.getElementById("no-routes");
+
+  const unlockedRoutes = ROUTES.filter(r => r.unlocked);
+  if (unlockedRoutes.length === 0) {
+    noRoutes.classList.remove("hidden");
+    return;
+  }
+
+  const latestRoute = unlockedRoutes[unlockedRoutes.length - 1];
+
+  document.getElementById("route-name").innerText = latestRoute.name;
+  document.getElementById("route-enemies").innerText = `Inimigos: ${latestRoute.enemies}`;
+  document.getElementById("route-boss").innerText = `Boss: ???`;
+
+  routeCard.classList.remove("hidden");
+
+  document.getElementById("btn-enter").onclick = () => {
+    window.location.href = `battle-adventure-road.html?routeId=${latestRoute.id}`;
+  };
+}
+
+// === NOVAS FUNÇÕES ===
+function openPreviousRoutesModal() {
+  const modal = document.getElementById("previous-routes-modal");
+  const list = document.getElementById("previous-routes-list");
+  list.innerHTML = "";
+
+  // Lista todas as rotas desbloqueadas, exceto a mais recente
+  const unlocked = ROUTES.filter(r => r.unlocked);
+  const previous = unlocked.slice(0, unlocked.length - 1);
+
+  if (previous.length === 0) {
+    list.innerHTML = `<p class="text-gray-400">Nenhuma rota anterior disponível.</p>`;
+  } else {
+    previous.forEach(route => {
+      const btn = document.createElement("button");
+      btn.className = "bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 rounded-lg transition";
+      btn.innerText = `${route.name} — Inimigos: ${route.enemies}`;
+      btn.onclick = () => {
+        window.location.href = `battle-adventure-road.html?routeId=${route.id}`;
+      };
+      list.appendChild(btn);
+    });
+  }
+
+  modal.classList.remove("hidden");
+}
+
+function closePreviousRoutesModal() {
+  document.getElementById("previous-routes-modal").classList.add("hidden");
+}
+
+// === MAIN ===
 document.addEventListener("DOMContentLoaded", () => {
-  const backBtn = document.getElementById("btn-back");
-  backBtn?.addEventListener("click", () => {
-    window.history.back();
-  });
+  // document.getElementById("btn-back")?.addEventListener("click", () => "jornada.html");
 
   loadProgress();
-  renderRoutes();
+  renderLatestUnlockedRoute();
   showUnlockBanner();
+
+  // Novo: abre e fecha modal
+  document.getElementById("btn-previous-routes")?.addEventListener("click", openPreviousRoutesModal);
+  document.getElementById("close-modal")?.addEventListener("click", closePreviousRoutesModal);
+
+  // Fechar modal ao clicar fora dele
+  document.getElementById("previous-routes-modal").addEventListener("click", e => {
+    if (e.target.id === "previous-routes-modal") closePreviousRoutesModal();
+  });
 });
