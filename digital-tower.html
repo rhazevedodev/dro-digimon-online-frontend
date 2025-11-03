@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Torre Digital</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="./script/digital-tower.js" defer></script>
+  <style>
+    /* Efeito de piscar ao tomar dano */
+    .flash-hit {
+      animation: flash 0.3s ease-in-out;
+    }
+  
+    @keyframes flash {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(2); }
+    }
+  
+    /* Tremor para golpes críticos */
+    .shake-critical {
+      animation: shake 0.3s ease-in-out;
+    }
+  
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      50% { transform: translateX(4px); }
+      75% { transform: translateX(-2px); }
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+
+  <!-- HEADER -->
+  <header class="flex items-center justify-between p-4 bg-gray-800 shadow-md">
+    <button id="btn-back" class="flex items-center gap-2 hover:opacity-90">
+      ← Voltar
+    </button>
+    <h1 class="text-xl font-bold">Torre Digital</h1>
+    <span class="opacity-0">←</span>
+  </header>
+
+  <main class="flex flex-col items-center gap-6 p-6 text-white text-center">
+    <p class="text-gray-300 max-w-md">
+      Suba infinitos andares, cada vez mais difíceis, e teste o limite dos seus Digimons!
+    </p>
+
+    <div id="tower-info" class="bg-gray-800 border border-gray-700 p-6 rounded-xl shadow-lg w-full max-w-md">
+      <p id="tower-floor" class="text-lg font-bold mb-2">Andar Atual: 1</p>
+      <p id="tower-record" class="text-gray-400 mb-4">Recorde Máximo: 1</p>
+      <button id="btn-start" class="bg-blue-600 hover:bg-blue-500 py-2 w-full rounded-lg font-semibold transition">
+        Iniciar Batalha
+      </button>
+    </div>
+
+    <!-- ÁREA DE BATALHA -->
+    <div id="battle-area" class="hidden bg-gray-800 border border-gray-700 p-6 rounded-xl shadow-lg w-full max-w-md text-center">
+      <h2 id="enemy-name" class="text-xl font-bold mb-3">Inimigo</h2>
+      <img id="enemy-img" src="" alt="Inimigo" class="w-32 h-32 mx-auto mb-3 rounded-lg border border-gray-600">
+      <p id="enemy-stats" class="text-sm text-gray-300 mb-2"></p>
+
+      <!-- Barras de HP -->
+      <div class="mb-2">
+        <p class="text-green-400 text-sm font-semibold">Seu HP</p>
+        <div class="bg-gray-700 w-full h-4 rounded">
+          <div id="player-hp-bar" class="bg-green-500 h-4 rounded" style="width: 100%"></div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <p class="text-red-400 text-sm font-semibold">HP Inimigo</p>
+        <div class="bg-gray-700 w-full h-4 rounded">
+          <div id="enemy-hp-bar" class="bg-red-500 h-4 rounded" style="width: 100%"></div>
+        </div>
+      </div>
+
+      <div id="battle-log" class="text-xs text-gray-300 mb-3 h-16 overflow-y-auto border border-gray-700 rounded p-2"></div>
+
+      <div id="battle-result" class="hidden mt-3"></div>
+
+      <div id="battle-buttons" class="flex flex-col gap-3">
+        <button id="btn-attack" class="bg-green-600 hover:bg-green-500 py-2 rounded-lg font-semibold transition">Atacar</button>
+        <button id="btn-run" class="bg-red-600 hover:bg-red-500 py-2 rounded-lg font-semibold transition">Fugir</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL DE RECOMPENSA -->
+  <div id="tower-reward-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50">
+    <div class="bg-gray-800 p-6 rounded-xl w-80 text-center border border-gray-700 shadow-2xl">
+      <h2 id="reward-title" class="text-xl font-bold mb-3 text-green-400">Vitória!</h2>
+      <p id="reward-floor" class="text-gray-300 mb-2"></p>
+      <ul id="reward-items" class="text-left list-disc list-inside mb-4 text-gray-200"></ul>
+      <button id="btn-next-floor" class="bg-blue-600 hover:bg-blue-500 py-2 rounded-lg w-full font-semibold">
+        Próximo Andar
+      </button>
+    </div>
+  </div>
+</body>
+</html>

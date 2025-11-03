@@ -69,6 +69,12 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("tipo").textContent = digimon.informacoesExtras.atributo;
   document.getElementById("elemento").textContent = digimon.informacoesExtras.elementoBuff;
 
+
+  //+ Informações
+  document.getElementById("btn-info")?.addEventListener("click", () => {
+    alert("📘 Detalhes do jogador:\n\nNível: 12\nPoder Total: 1420\nDigimon: Agumon\nTempo de Jogo: 3h 22m");
+  });
+
   // Ativar ícones feather
   feather.replace();
 });

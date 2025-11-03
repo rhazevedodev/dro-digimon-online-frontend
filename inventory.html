@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inventário</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script src="./script/inventory.js" defer></script>
+
+    <style>
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-fadeIn {
+        animation: fadeIn 0.28s ease-out forwards;
+      }
+
+      /* ▸ Raridade: classes utilitárias usadas pelo JS */
+      .raridade-comum { border-color: #9ca3af; }
+      .raridade-rara { border-color: #3b82f6; }
+      .raridade-epica { border-color: #a855f7; }
+      .raridade-lendaria { border-color: #facc15; }
+
+      /* ▸ Card quadrado */
+      .item-card {
+        aspect-ratio: 1 / 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #1f2937;
+        border-width: 3px;
+        border-radius: 12px;
+        padding: 0.5rem;
+        cursor: pointer;
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+      }
+      .item-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+      }
+
+      /* modal backdrop */
+      #item-modal { backdrop-filter: blur(3px); }
+
+      /* force grid height so cards don't stretch weirdly on some devices */
+      main { min-height: calc(100vh - 140px); }
+    </style>
+  </head>
+
+  <body class="bg-gray-900 text-white min-h-screen flex flex-col">
+    <!-- Cabeçalho -->
+    <header class="p-4 bg-gray-800 border-b border-gray-700 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button id="btn-back" class="bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded text-sm">Voltar</button>
+        <h1 class="text-lg font-bold">🎒 Inventário</h1>
+      </div>
+
+      <!-- categorias (restaurado) -->
+      <nav class="hidden sm:flex gap-2 items-center">
+        <button class="tab-btn bg-blue-700 px-3 py-1 rounded text-sm" data-category="resources">Recursos</button>
+        <button class="tab-btn bg-gray-700 px-3 py-1 rounded text-sm" data-category="fragments">Fragmentos</button>
+        <button class="tab-btn bg-gray-700 px-3 py-1 rounded text-sm" data-category="equipments">Equipamentos</button>
+        <button class="tab-btn bg-gray-700 px-3 py-1 rounded text-sm" data-category="others">Diversos</button>
+      </nav>
+    </header>
+
+    <!-- filtros mobile (visível em telas pequenas) -->
+    <div class="p-3 sm:hidden">
+      <div class="flex gap-2 justify-center">
+        <button class="tab-btn bg-blue-700 px-3 py-1 rounded text-sm" data-category="resources">Recursos</button>
+        <button class="tab-btn bg-gray-700 px-3 py-1 rounded text-sm" data-category="fragments">Fragmentos</button>
+        <button class="tab-btn bg-gray-700 px-3 py-1 rounded text-sm" data-category="equipments">Equipamentos</button>
+        <button class="tab-btn bg-gray-700 px-3 py-1 rounded text-sm" data-category="others">Diversos</button>
+      </div>
+    </div>
+
+    <!-- Inventário -->
+    <main class="flex-1 p-4 overflow-y-auto">
+      <div id="inventory-grid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+        <!-- render via JS -->
+      </div>
+    </main>
+
+    <!-- Modal do item -->
+    <div id="item-modal" class="hidden fixed inset-0 bg-black/70 z-50 flex justify-center items-center overflow-y-auto">
+      <div class="bg-gray-800 border-2 border-gray-700 rounded-xl w-11/12 max-w-sm p-6 relative shadow-2xl mx-auto my-10 animate-fadeIn" style="min-width:280px">
+        <button id="close-modal" class="absolute top-2 right-3 text-gray-400 hover:text-white text-xl">✖</button>
+
+        <div class="text-center">
+          <div id="modal-icon" class="text-5xl mb-2">❔</div>
+          <h2 id="modal-name" class="text-xl font-bold text-white mb-2">Nome do Item</h2>
+          <p id="modal-description" class="text-gray-300 text-sm mb-3">Descrição do item.</p>
+          <p id="modal-extra" class="text-gray-400 text-sm mb-3"></p>
+          <button id="modal-action" class="hidden bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg text-sm font-semibold">Ação</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

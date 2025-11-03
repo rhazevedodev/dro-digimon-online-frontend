@@ -19,4 +19,16 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = "expeditions.html";
     });
   });
+  //Abre a tela de torre digital
+  document.querySelectorAll("[data-mode='digital-tower']").forEach(el => {
+    el.addEventListener("click", () => {
+      window.location.href = "digital-tower.html";
+    });
+  });
+  //Abre a tela de daily challenges
+  document.querySelectorAll("[data-mode='daily-challenges']").forEach(el => {
+    el.addEventListener("click", () => {
+      window.location.href = "daily-challenges.html";
+    });
+  });
 });

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Desafios Diários</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+
+  <header class="bg-gray-800 p-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold">📅 Desafios Diários</h1>
+    <button id="btn-back" class="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded">Voltar</button>
+  </header>
+
+  <main class="flex-1 p-6 space-y-6 max-w-md mx-auto">
+    <p class="text-gray-300 text-center">
+      Complete as missões do dia e ganhe recompensas extras!<br>
+      <span id="reset-timer" class="text-sm text-yellow-400"></span>
+    </p>
+
+    <div id="challenges-list" class="space-y-4"></div>
+
+    <div id="daily-reward" class="hidden text-center bg-green-700 rounded-xl p-4 mt-6">
+      <p class="font-bold mb-2">🎁 Todos os desafios concluídos!</p>
+      <button id="btn-daily-reward" class="bg-green-500 hover:bg-green-400 py-2 px-4 rounded font-semibold">
+        Coletar Recompensa do Dia
+      </button>
+    </div>
+  </main>
+
+  <!-- Modal de recompensa -->
+  <div id="reward-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+    <div class="bg-gray-800 p-6 rounded-xl shadow-xl w-80 text-center">
+      <h2 class="text-xl font-bold mb-3">🎉 Recompensa Coletada!</h2>
+      <p id="reward-modal-text" class="text-gray-300 mb-4"></p>
+      <button class="bg-blue-600 hover:bg-blue-500 py-2 px-4 rounded" onclick="closeRewardModal()">Fechar</button>
+    </div>
+  </div>
+
+  <script src="./script/daily-challenges.js" defer></script>
+</body>
+</html>
