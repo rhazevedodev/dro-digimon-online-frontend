@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digievolução</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center p-4">
+
+  <!-- 🔙 Voltar -->
+  <button id="btn-back" class="self-start text-gray-400 hover:text-white mb-3">&larr; Voltar</button>
+
+  <!-- 🧬 Digimon Atual -->
+  <!-- <div id="digimon-atual" class="bg-gray-800 border border-gray-700 p-5 rounded-xl w-full max-w-sm text-center shadow-lg mb-5">
+    <img id="digimon-img" src="" alt="Digimon Atual" class="w-32 h-32 mx-auto mb-3 rounded-lg">
+    <h2 id="digimon-nome" class="text-xl font-bold"></h2>
+    <p id="digimon-estagio" class="text-gray-400"></p>
+  </div> -->
+
+  <!-- 🔁 Lista de possíveis evoluções -->
+  <div id="lista-evolucoes" class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl"></div>
+
+  <!-- 🧾 Requisitos -->
+  <div id="requisitos-evolucao" class="hidden bg-gray-800 border border-gray-700 p-5 rounded-xl w-full max-w-md mt-5 text-sm">
+    <h3 id="evolucao-nome" class="text-lg font-bold mb-3"></h3>
+    <ul id="evolucao-detalhes" class="space-y-2"></ul>
+    <button id="btn-evoluir" class="hidden mt-5 w-full py-2 rounded-lg font-bold transition">
+      Evoluir Agora
+    </button>
+  </div>
+
+  <script src="./script/digievolucao.js" defer></script>
+</body>
+</html>

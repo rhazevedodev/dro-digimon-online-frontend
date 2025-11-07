@@ -75,6 +75,12 @@ document.addEventListener("DOMContentLoaded", () => {
     alert("📘 Detalhes do jogador:\n\nNível: 12\nPoder Total: 1420\nDigimon: Agumon\nTempo de Jogo: 3h 22m");
   });
 
+  //+ Digievolucao
+  document.getElementById("btn-evo")?.addEventListener("click", () => {
+    window.location.href = "digievolucao.html";
+  });
+
+
   // Ativar ícones feather
   feather.replace();
 });
