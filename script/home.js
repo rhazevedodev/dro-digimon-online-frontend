@@ -1,4 +1,69 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const btnEvo = document.getElementById("btn-evo");
+
+  // Mock do Digimon atual (exemplo)
+  const digimonAtual = {
+    nome: "Agumon",
+    nivel: 25,
+    fragmentos: { "Greymon": 4, "MetalGreymon": 1 },
+    stats: { atk: 55, def: 40, hp: 180 },
+  };
+
+  // Mock das possíveis evoluções (pode futuramente vir do backend)
+  const evolucoesPossiveis = [
+    {
+      nome: "Greymon",
+      requisitos: {
+        nivel: 15,
+        fragmentos: 3,
+        stats: { atk: 40, def: 25, hp: 150 },
+      },
+    },
+    {
+      nome: "MetalGreymon",
+      requisitos: {
+        nivel: 30,
+        fragmentos: 5,
+        stats: { atk: 65, def: 45, hp: 200 },
+      },
+    },
+  ];
+
+  // Função para verificar se há alguma evolução possível
+  function verificarEvolucaoDisponivel() {
+    return evolucoesPossiveis.some(ev => {
+      const req = ev.requisitos;
+
+      const nivelOk = digimonAtual.nivel >= req.nivel;
+      const fragOk = (digimonAtual.fragmentos[ev.nome] || 0) >= req.fragmentos;
+      const statsOk =
+        digimonAtual.stats.atk >= req.stats.atk &&
+        digimonAtual.stats.def >= req.stats.def &&
+        digimonAtual.stats.hp >= req.stats.hp;
+
+      return nivelOk && fragOk && statsOk;
+    });
+  }
+
+  // Aplica destaque se houver evolução
+  if (verificarEvolucaoDisponivel()) {
+    btnEvo.classList.add(
+      "animate-pulse",
+      "text-blue-400",
+      "shadow-blue-500/30"
+    );
+  } else {
+    btnEvo.classList.remove(
+      "animate-pulse",
+      "text-blue-400",
+      "shadow-blue-500/30"
+    );
+  }
+
+  btnEvo?.addEventListener("click", () => {
+    window.location.href = "digievolucao.html";
+  });
+
   // Simulação de resposta do backend (mock interno)
   const digimon = {
     nome: "Agumon",
@@ -72,6 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //+ Informações
   document.getElementById("btn-info")?.addEventListener("click", () => {
+    btn.addEventListener("click", e => e.target.blur());
     alert("📘 Detalhes do jogador:\n\nNível: 12\nPoder Total: 1420\nDigimon: Agumon\nTempo de Jogo: 3h 22m");
   });
 
