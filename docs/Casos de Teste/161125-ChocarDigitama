@@ -1,0 +1,179 @@
+# 🐣 Teste de Chocagem (Eclosão) de Digitama
+
+## 🎯 Objetivo
+Validar o fluxo de **chocagem da Digitama** previamente selecionada pelo jogador, garantindo que:
+- Somente jogadores com uma Digitama selecionada possam executar a eclosão;
+- A Digitama seja marcada como “chocada” (`digitamaChocada = true`);
+- Um novo **Digimon inicial** seja criado e vinculado ao jogador;
+- A resposta da API contenha os dados do Digimon recém-criado.
+
+---
+
+## 🧩 Pré-condições
+- Jogador autenticado com **token JWT válido**;
+- Jogador **já possui uma Digitama selecionada** (`digitamaSelecionada = true`);
+- `digitamaChocada = false` no estado atual;
+- Aplicação em execução local (`http://localhost:8080`);
+- Postman ou Insomnia configurado.
+
+---
+
+## ⚙️ Passos de Teste
+
+### 1️⃣ Verificar estado atual da Digitama
+
+**Descrição:**  
+Antes de chocar, verificar se a Digitama está marcada como selecionada, mas ainda não chocada.
+
+**Curl de teste:**
+```bash
+curl --request GET \
+  --url http://localhost:8080/digitamas/estado \
+  --header 'Authorization: Bearer <TOKEN_DO_USUARIO>'
+```
+
+**Resultado Esperado**
+```json
+{
+	"id": 1,
+	"digitamaSelecionada": true,
+	"digitamaIdSelecionada": 1,
+	"digitamaChocada": false,
+	"ultimoUpdate": "2025-11-16T15:49:45.565872"
+}
+```
+
+**Validações:**
+
+- ✅ Deve retornar status HTTP 200 OK;
+- ✅ A Digitama está selecionada (digitamaSelecionada = true);
+- ✅ Ainda não está chocada (digitamaChocada = false);
+- ✅ O digitamaIdSelecionada deve corresponder ao ovo escolhido anteriormente.
+
+### 2️⃣ Executar a chocagem (eclosão)
+
+**Descrição:**  
+Enviar a requisição que realiza o “chocar” da Digitama e cria o primeiro Digimon.
+
+**Curl de teste:**
+```bash
+curl --request POST \
+  --url http://localhost:8080/digitamas/chocar \
+  --header 'Authorization: Bearer <TOKEN_DO_USUARIO>' \
+  --header 'Content-Type: application/json' \
+  --header 'User-Agent: insomnia/11.6.2' \
+  --cookie JSESSIONID=0A9891EFA77593692330059A7F822288 \
+  --data '{
+	"digitamaId":"6"
+}'
+```
+
+**Resultado Esperado (HTTP 200 OK)**
+```json
+{
+	"digimonId": 1,
+	"nome": "Botamon",
+	"imagem": "../images/digimons/baby1/botamon.jpg",
+	"tipo": "DATA",
+	"elemento": "NEUTRAL",
+	"personalidade": "LIVELY",
+	"ivs": {
+		"total": 0,
+		"def": 100,
+		"spd": 75,
+		"hp": 66,
+		"atk": 26,
+		"int": 68
+	},
+	"level": 1
+}
+```
+
+**Validações:**
+
+- ✅ Deve retornar status HTTP 200 OK;
+- ✅ O campo digitamaChocada deve ser atualizado para true;
+- ✅ Um novo registro de Digimon é criado no banco, vinculado ao jogador;
+- ✅ O nome e o estágio do Digimon correspondem à Digitama escolhida (ex: “Digitama Verde” → “Botamon”).
+
+### 3️⃣ Verificar atualização no banco
+
+Verificação manual no banco de dados:
+
+ ``` sql
+SELECT id, digitama_chocada, digitama_id_selecionada
+FROM estado_jogo
+WHERE jogador_id = 1;
+ ```
+
+ **Esperado**
+
+| id | digitama_chocada | digitama_id_selecionada |
+| -- | ---------------- | ----------------------- |
+| 1  | true             | 1                       |
+
+E confirmar o Digimon criado:
+
+ ``` sql
+SELECT id, nome, estagio, nivel, jogador_id
+FROM digimon
+WHERE jogador_id = 1;
+
+ ```
+
+  **Esperado**
+
+| id | nome    | estagio | nivel | jogador_id |
+| -- | ------- | ------- | ----- | ---------- |
+| 7  | Botamon | Baby I  | 1     | 1          |
+
+
+### 4️⃣ Tentativa de chocar novamente (caso negativo)
+
+**Descrição:**  
+Validar que o jogador não pode chocar novamente uma Digitama já eclodida.
+
+**Curl de teste:**
+```bash
+curl --request POST \
+  --url http://localhost:8080/digitamas/chocar \
+  --header 'Authorization: Bearer <TOKEN_DO_USUARIO>' \
+  --header 'Content-Type: application/json' \
+  --header 'User-Agent: insomnia/11.6.2' \
+  --cookie JSESSIONID=0A9891EFA77593692330059A7F822288 \
+  --data '{
+	"digitamaId":"6"
+}'
+```
+
+**Resultado Esperado (HTTP 400 Bad Request)**
+```json
+{
+	"timestamp": "2025-11-16T23:02:24.971956700Z",
+	"status": 400,
+	"error": "Erro interno",
+	"message": "O jogador já possui uma Digitama chocada."
+}
+```
+
+**Validações:**
+
+- ✅ O backend bloqueia múltiplas eclosões;
+- ✅ Nenhum novo Digimon é criado no banco;
+- ✅ Mensagem de erro clara e coerente;
+- ✅ Log de auditoria pode ser registrado (futuro).
+
+## 🧾 Pós-condições
+- A Digitama do jogador está marcada como digitamaChocada = true;
+- Um novo Digimon foi criado e vinculado corretamente ao jogador;
+- O jogador não pode repetir o processo de chocagem;
+- O estado do jogo está pronto para os próximos testes (menu inicial / interface principal do Digimon).
+
+## ⚠️ Observações
+- O fluxo de chocagem só pode ocorrer uma vez por Digitama;
+- O sistema deve garantir que apenas jogadores com uma Digitama selecionada possam executar o POST /chocar;
+- Erros esperados:
+```pgsql
+400 BAD REQUEST → O jogador já possui uma Digitama chocada.
+403 FORBIDDEN → Nenhuma Digitama selecionada.
+```

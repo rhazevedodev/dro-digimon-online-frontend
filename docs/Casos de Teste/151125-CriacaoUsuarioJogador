@@ -1,0 +1,107 @@
+# 🧪 Teste de Cadastro de Usuário e Criação de Jogador
+
+## 🎯 Objetivo
+Validar o fluxo de registro e associação automática entre usuário e jogador.
+
+## 🧩 Pré-condições
+- Aplicação em execução local.
+- Postman configurado com `localhost:8080`.
+
+## ⚙️ Passos
+
+### 1️⃣ Cadastro de novo usuário
+
+**Descrição:**  
+Enviar uma requisição `POST /auth/register` com as credenciais básicas de um novo usuário.
+
+**Curl de teste:**
+```bash
+curl --request POST \
+  --url http://localhost:8080/auth/register \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "username": "rafael",
+    "email": "rafael@teste.com",
+    "password": "123456"
+  }'
+```
+  
+**Resultado Esperado**
+
+    ```json
+    {
+	"token": "<TOKEN>",
+	"username": "rafael"
+    }
+    ```
+
+**Validações:**
+
+- ✅ Deve retornar status HTTP 200 OK.
+- ✅ O username retornado deve corresponder ao username enviado no cadastro;
+
+- ✅ Campos obrigatórios não podem estar em branco.
+- ✅ A senha deve ter pelo menos 6 caracteres.
+- ✅ O email deve estar em formato válido.
+- ✅ O nome de usuário deve ter pelo menos 3 caracteres.
+- ✅ O nome de usuário não pode exceder 20 caracteres.
+- ✅ O email não pode exceder 20 caracteres.
+- ✅ A senha não pode exceder 20 caracteres.
+- ✅ O nome de usuário não pode conter espaços.
+- ✅ A senha não pode conter espaços.
+- ✅ O email não pode conter espaços.
+- ✅ Não deve ser possivel criar um novo registro que username ja existe no sistema.
+- ✅ Não deve ser possivel criar um novo registro que email ja existe no sistema.
+
+---
+
+### 2️⃣ Verificação de criação do jogador associado
+
+**Descrição:**  
+Após o cadastro, validar se um novo jogador foi criado automaticamente e vinculado ao usuário recém-cadastrado.
+
+**Curl de teste:**
+```bash
+    curl --request GET \
+    --url http://localhost:8080/usuarios \
+    --header 'User-Agent: insomnia/12.0.0' \
+    --cookie JSESSIONID=0A9891EFA77593692330059A7F822288
+```
+
+**Resultado Esperado**
+
+``` json
+[
+	{
+		"id": 1,
+		"username": "rafael",
+		"email": "rafael@teste.com"
+	}
+]
+```
+
+**Validações:**
+
+- ✅ O novo usuário aparece na listagem de /usuarios.
+- ✅ Há um jogador associado na tabela jogador do banco de dados:
+ ``` sql
+   SELECT j.id, u.username, u.email
+   FROM jogador j
+   JOIN usuario u ON j.usuario_id = u.id
+   WHERE u.email = 'rafael2@teste.com';
+```
+- ✅ O campo usuario_id do jogador corresponde ao ID do usuário recém-criado.
+
+## 🧾 Pós-condições
+- Existe um registro em usuario com email = 'rafael2@teste.com'.
+- Existe um registro correspondente em jogador com o mesmo usuario_id.
+- O JWT retornado é válido e pode ser reutilizado no endpoint de login ou autenticação.
+
+## ⚠️ Observações
+- Este teste garante o fluxo base de registro/autocriação do jogador.
+- Não requer prévia autenticação (endpoint público).
+- Erros esperados:
+```pgsql
+409 CONFLICT → usuário já cadastrado.
+400 BAD REQUEST → campos obrigatórios ausentes.
+```

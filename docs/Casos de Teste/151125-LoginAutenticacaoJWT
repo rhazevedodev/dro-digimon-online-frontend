@@ -1,0 +1,151 @@
+# 🔐 Teste de Login e Autenticação JWT
+
+## 🎯 Objetivo
+Validar o fluxo de autenticação de um **usuário previamente cadastrado**, garantindo que o sistema:
+- Retorne um **token JWT válido**;
+- Permita o **acesso a endpoints protegidos** com o token recebido;
+- Rejeite requisições sem token ou com token inválido/expirado.
+
+---
+
+## 🧩 Pré-condições
+- Usuário previamente cadastrado (ex: `rafael2@teste.com` com senha `123456`);
+- Aplicação em execução local (`http://localhost:8080`);
+- Postman ou Insomnia configurado;
+- Banco de dados migrado e consistente (Flyway OK).
+
+---
+## ⚙️ Passos de Teste
+
+### 1️⃣ Autenticação de usuário existente
+
+**Descrição:**  
+Enviar uma requisição `POST /auth/login` com o e-mail e senha de um usuário válido.
+
+**Curl de teste:**
+```bash
+curl --request POST \
+  --url http://localhost:8080/auth/login \
+  --header 'Content-Type: application/json' \
+  --header 'User-Agent: insomnia/11.6.1' \
+  --cookie JSESSIONID=0A9891EFA77593692330059A7F822288 \
+  --data '{
+  "username": "rafael",
+  "password": "123456"
+}'
+```
+
+**Resultado Esperado (HTTP 200 OK)**
+
+    ```json
+    {
+	"token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyYWZhZWwiLCJpYXQiOjE3NjMxNzMxODYsImV4cCI6MTc2MzI1OTU4Nn0.XQY9AhwCeeUhbijqNCz6_PiT10afbpaXRkHkzJDA6zA",
+	"username": "rafael"
+    }
+    ```
+**Validações:**
+
+- ✅ Deve retornar status HTTP 200 OK.
+- ✅ O campo token deve conter um JWT válido;
+- ✅ O username retornado deve corresponder ao usuário logado;
+- ✅ O token deve ser aceito em requisições autenticadas (próximo passo).
+
+---
+
+### 2️⃣ Acesso a endpoint protegido com token válido
+
+**Descrição:**  
+Usar o token obtido no passo anterior para acessar um endpoint protegido, confirmando que o sistema reconhece a autenticação.
+
+**Curl de teste:**
+```bash
+curl --request GET \
+  --url http://localhost:8080/digimon \
+  --header 'Authorization: Bearer <TOKEN_DO_LOGIN>'
+```
+
+**Resultado Esperado (HTTP 200 OK)**
+```json
+[
+  {
+    "id": 1,
+    "nome": "Agumon",
+    "nivel": 5,
+    "estagio": "Rookie",
+    "ativo": true
+  }
+]
+```
+
+**Validações:**
+
+- ✅ O endpoint responde com dados (lista de Digimons, por exemplo);
+- ✅ O token JWT é aceito e decodificado corretamente pelo backend.
+
+---
+
+### 3️⃣ Tentativa de acesso com token inválido
+
+**Descrição:**  
+Enviar a mesma requisição, mas com token corrompido ou expirado, para validar a rejeição.
+
+**Curl de teste:**
+```bash
+curl --request GET \
+  --url http://localhost:8080/digimon \
+  --header 'Authorization: Bearer TOKEN_INVALIDO_EXEMPLO'
+```
+
+**Resultado Esperado**
+```json
+{
+  "error": "Token inválido ou expirado",
+  "status": 401
+}
+```
+
+**Validações:**
+
+- ✅ Deve retornar status 401 Unauthorized;
+- ✅ Nenhum dado sensível deve ser retornado;
+- ✅ Mensagem de erro deve indicar claramente problema de autenticação.
+
+---
+
+### 4️⃣ Tentativa de acesso sem token
+
+**Descrição:**  
+Enviar requisição ao mesmo endpoint protegido, mas sem o cabeçalho Authorization.
+
+**Curl de teste:**
+```bash
+curl --request GET \
+  --url http://localhost:8080/digimon
+```
+
+**Resultado Esperado**
+```json
+{
+  "error": "Acesso negado - autenticação obrigatória"
+}
+```
+
+**Validações:**
+
+- ✅ A requisição deve ser rejeitada;
+- ✅ A mensagem deve indicar ausência de credenciais;
+- ✅ O backend deve registrar o evento (log de segurança).
+
+## 🧾 Pós-condições
+- O token JWT emitido no login é válido até expiração (verificar tempo de validade configurado);
+- Sessão autenticada permite requisições subsequentes;
+- Tokens inválidos ou ausentes são corretamente bloqueados.
+
+## ⚠️ Observações
+- Teste cobre autenticação via JWT e controle de acesso via Spring Security;
+- Tempo de expiração padrão do token: geralmente 2 horas (configurável em propriedades);
+- Erros esperados:
+```pgsql
+401 UNAUTHORIZED → token inválido ou expirado.
+403 FORBIDDEN → ausência de token.
+```

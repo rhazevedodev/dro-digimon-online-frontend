@@ -1,0 +1,158 @@
+# 🥚 Teste de Seleção de Digitama
+
+## 🎯 Objetivo
+Validar o fluxo de **seleção inicial de Digitama** por parte do jogador recém-criado, garantindo que:
+- O jogador só possa selecionar **uma Digitama** por vez;
+- O estado do jogador seja atualizado corretamente no banco (`digitamaSelecionada = true`);
+- O retorno da API traga confirmação da escolha e os dados da Digitama.
+
+---
+
+## 🧩 Pré-condições
+- Usuário cadastrado e autenticado (token JWT válido obtido via `/auth/login`);
+- Jogador recém-criado, ainda **sem Digitama selecionada** (`digitamaSelecionada = false`);
+- Aplicação em execução local (`http://localhost:8080`);
+- Postman ou Insomnia configurado.
+
+---
+
+## ⚙️ Passos de Teste
+
+### 1️⃣ Listar Digitamas disponíveis
+
+**Descrição:**  
+Obter a lista de Digitamas iniciais disponíveis para seleção.
+
+**Curl de teste:**
+```bash
+curl --request GET \
+  --url http://localhost:8080/digitamas \
+  --header 'User-Agent: insomnia/11.6.1' \
+  --cookie JSESSIONID=0A9891EFA77593692330059A7F822288
+```
+
+**Resultado Esperado**
+```json
+[
+  {
+		"id": 1,
+		"nome": "Digitama Verde",
+		"imagem": "../images/digimons/digitamas/digitama1.jpg",
+		"possiveis": [
+			"Botamon",
+			"Punimon"
+		]
+  },
+  {
+		"id": 2,
+		"nome": "Digitama Azul",
+		"imagem": "../images/digimons/digitamas/digitama2.jpeg",
+		"possiveis": [
+			"Yuramon",
+			"Poyomon"
+		]
+  }
+]
+```
+
+**Validações:**
+
+- ✅ Deve retornar status HTTP 200 OK.
+- ✅ Deve listar todas as Digitamas iniciais cadastradas;
+- ✅ O username retornado deve corresponder ao usuário logado;
+- ✅ Nenhum campo essencial (id, nome, imagem, possiveis) deve vir nulo.
+
+### 2️⃣ Selecionar uma Digitama
+
+**Descrição:**  
+Enviar a escolha do jogador informando o ID da Digitama selecionada.
+
+**Curl de teste:**
+
+```bash
+curl --request POST \
+  --url http://localhost:8080/digitamas/selecionar \
+  --header 'Authorization: Bearer <TOKEN_DO_USUARIO>' \
+  --header 'Content-Type: application/json' \
+  --header 'User-Agent: insomnia/12.0.0' \
+  --cookie JSESSIONID=0A9891EFA77593692330059A7F822288 \
+  --data '{
+	"digitamaId": 1
+}'
+```
+
+**Resultado Esperado (HTTP 200 OK)**
+```json
+{
+	"mensagem": "Digitama selecionada com sucesso!",
+	"digitama": {
+		"id": 1,
+		"nome": "Digitama Verde",
+		"imagem": "../images/digimons/digitamas/digitama1.jpg"
+	},
+	"jogador": {
+		"id": 1,
+		"digitamaSelecionada": true,
+		"digitamaIdSelecionada": 1
+	}
+}
+```
+
+**Validações:**
+
+- ✅ Deve retornar status HTTP 200 OK.
+- ✅ O jogador passa a ter digitamaSelecionada = true;
+- ✅ O campo digitamaIdSelecionada no banco reflete a escolha.
+
+### 3️⃣ Verificar atualização no banco
+
+Verificação manual no banco de dados:
+
+ ``` sql
+SELECT id, digitama_selecionada, digitama_id_selecionada
+FROM estado_jogo
+WHERE jogador_id = 1
+ ```
+
+### 4️⃣ Tentar selecionar novamente (caso negativo)
+
+**Descrição:**  
+Validar que o jogador não pode selecionar outra Digitama depois de já ter escolhido uma.
+
+```bash
+curl --request POST \
+  --url http://localhost:8080/digitamas/selecionar \
+  --header 'Authorization: Bearer <TOKEN_DO_USUARIO>' \
+  --header 'Content-Type: application/json' \
+  --header 'User-Agent: insomnia/12.0.0' \
+  --cookie JSESSIONID=0A9891EFA77593692330059A7F822288 \
+  --data '{
+	"digitamaId": 1
+}'
+```
+
+**Resultado Esperado (HTTP 400 Bad Request)**
+```json
+{
+	"timestamp": "2025-11-16T19:46:20.410110Z",
+	"status": 400,
+	"error": "Erro interno",
+	"message": "O jogador já possui uma Digitama selecionada."
+}
+```
+
+**Validações:**
+
+- ✅ O backend bloqueia múltiplas seleções;
+- ✅ Nenhum dado do jogador é alterado após a tentativa;
+- ✅ Log de erro ou auditoria é registrado (se implementado). //ainda nao esta sendo feito
+
+## 🧾 Pós-condições
+- O jogador possui digitamaSelecionada = true;
+- O campo digitamaIdSelecionada contém o ID da Digitama escolhida;
+- O fluxo de evolução (eclosão) pode ser iniciado a partir desse estado.
+
+## ⚠️ Observações
+- Esse fluxo só pode ser executado uma vez por jogador;
+- A API deve retornar erro consistente se chamada novamente;
+- Testes futuros dependem do estado resultante (digitamaSelecionada = true).
